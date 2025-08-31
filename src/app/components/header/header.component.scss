@@ -1,0 +1,333 @@
+// Header Component Styles
+.header {
+  &-logo {
+    transition: all 0.3s ease;
+    
+    img {
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+      transition: all 0.3s ease;
+    }
+    
+    &:hover {
+      transform: scale(1.05);
+      
+      img {
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+      }
+    }
+  }
+  
+  &-nav {
+    &-link {
+      position: relative;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.05);
+      }
+      
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        transition: width 0.3s ease;
+      }
+      
+      &:hover::after,
+      &.active::after {
+        width: 100%;
+      }
+    }
+  }
+  
+  &-icon {
+    &-container {
+      position: relative;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+    
+    &-badge {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      
+      @keyframes pulse {
+        0%, 100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+    }
+    
+    &-hover {
+      transition: opacity 0.3s ease;
+    }
+  }
+}
+
+// Mobile menu animations
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideDown {
+  animation: slideDown 0.3s ease-out;
+}
+
+// Responsive adjustments
+@media (max-width: 1024px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  // Adjust header height for mobile
+  header {
+    .h-20 {
+      height: 4rem;
+    }
+  }
+  
+  // Adjust logo size for mobile
+  img[src*="logo.png"] {
+    width: 50px !important;
+    height: 50px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  // Stack actions vertically on very small screens
+  .flex.items-center.space-x-4 {
+    gap: 0.5rem;
+  }
+  
+  // Adjust icon sizes for mobile
+  .w-7.h-7 {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  
+  // Adjust badge sizes for mobile
+  .absolute.-top-2.-right-2 {
+    top: -0.25rem;
+    right: -0.25rem;
+  }
+  
+  .h-7.w-7 {
+    height: 1.5rem;
+    width: 1.5rem;
+  }
+}
+
+// Mobile menu improvements
+@media (max-width: 1024px) {
+  // Ensure mobile menu is properly positioned
+  .lg\\:hidden {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Custom gradient text
+.text-gradient {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// Enhanced backdrop blur
+.backdrop-blur-md {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+// Custom shadow
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+} 
+
+.nav-bar-wrapper {
+  @media screen and (max-width: 992px) {
+    display: none;
+  }
+}
+.nav-mobile {
+  @media screen and (min-width: 992px) {
+    display: none !important;
+  }
+}
+
+// User dropdown menu styles
+.user-dropdown {
+  animation: fadeInScale 0.2s ease-out;
+  transform-origin: top right;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+// Close dropdown when clicking outside
+.dropdown-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: transparent;
+}
+
+// User menu button styles
+.user-menu-button {
+  position: relative;
+  
+  &.active {
+    .user-icon {
+      color: #dc2626;
+      transform: scale(1.1);
+    }
+  }
+}
+
+// Enhanced user dropdown styling
+.user-dropdown-menu {
+  min-width: 12rem;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  backdrop-filter: blur(8px);
+  
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    text-align: right;
+    font-size: 0.875rem;
+    color: #374151;
+    transition: all 0.2s ease;
+    border: none;
+    background: none;
+    cursor: pointer;
+    
+    &:hover {
+      background: #f9fafb;
+      color: #1f2937;
+      
+      svg {
+        transform: scale(1.1);
+      }
+    }
+    
+    &.logout {
+      color: #dc2626;
+      border-top: 1px solid #e5e7eb;
+      
+      &:hover {
+        background: #fef2f2;
+        color: #b91c1c;
+      }
+    }
+    
+    svg {
+      margin-left: 0.75rem;
+      width: 1rem;
+      height: 1rem;
+      transition: transform 0.2s ease;
+    }
+  }
+  
+  .user-greeting {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f9fafb;
+    border-radius: 0.5rem 0.5rem 0 0;
+  }
+}
+
+// Responsive adjustments for user dropdown
+@media (max-width: 768px) {
+  .user-dropdown-menu {
+    right: 0;
+    left: auto;
+    min-width: 10rem;
+    
+    .dropdown-item {
+      padding: 0.625rem 0.875rem;
+      font-size: 0.8rem;
+      
+      svg {
+        width: 0.875rem;
+        height: 0.875rem;
+        margin-left: 0.5rem;
+      }
+    }
+    
+    .user-greeting {
+      padding: 0.625rem 0.875rem;
+      font-size: 0.8rem;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .user-dropdown-menu {
+    min-width: 9rem;
+    
+    .dropdown-item {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+      
+      svg {
+        width: 0.75rem;
+        height: 0.75rem;
+        margin-left: 0.375rem;
+      }
+    }
+    
+    .user-greeting {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+    }
+  }
+}

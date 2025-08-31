@@ -1,0 +1,142 @@
+<div class="auth-page-container">
+  <div class="auth-page-content">
+    <!-- Header Section -->
+    <div class="auth-page-header">
+      <div class="auth-logo">
+        <img src="assets/images/logo.png" alt="الفتح" class="logo-img">
+      </div>
+      <h2>إنشاء حساب جديد</h2>
+      <p>انضم إلينا واستفد من العروض والخدمات المميزة</p>
+    </div>
+
+    <!-- Form Section -->
+    <div class="auth-page-form">
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+        <!-- Top Row: Username and Email/Phone -->
+        <div class="form-group full-width">
+          <label>
+            اسم المستخدم <span class="required">*</span>
+          </label>
+          <input 
+            type="text" 
+            formControlName="fullName" 
+            placeholder="أدخل اسم المستخدم"
+            [class.error]="isFieldInvalid('fullName')">
+          <div *ngIf="isFieldInvalid('fullName')" class="error-text">
+            اسم المستخدم مطلوب (حرفان على الأقل)
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label>
+            البريد الإلكتروني أو رقم الهاتف <span class="required">*</span>
+          </label>
+          <input 
+            type="text" 
+            formControlName="username" 
+            placeholder="مثال: user@example.com أو 01012345678"
+            [class.error]="isFieldInvalid('username')">
+          <div *ngIf="isFieldInvalid('username')" class="error-text">
+            <span *ngIf="registerForm.get('username')?.errors?.['required']">البريد الإلكتروني أو رقم الهاتف مطلوب</span>
+            <span *ngIf="registerForm.get('username')?.errors?.['invalidEmailOrPhone']">يرجى إدخال بريد إلكتروني صحيح أو رقم هاتف صحيح</span>
+          </div>
+        </div>
+      
+        <!-- Bottom Row: Password fields side by side -->
+        <div class="form-group">
+          <label>
+            كلمة المرور <span class="required">*</span>
+          </label>
+          <div class="password-input">
+            <input 
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password" 
+              placeholder="أدخل كلمة المرور (6 أحرف على الأقل)"
+              [class.error]="isFieldInvalid('password')">
+            <button 
+              type="button" 
+              class="password-toggle"
+              (click)="togglePassword()">
+              <svg *ngIf="!showPassword" class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+              </svg>
+              <svg *ngIf="showPassword" class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+              </svg>
+            </button>
+          </div>
+          <div *ngIf="isFieldInvalid('password')" class="error-text">
+            كلمة المرور يجب أن تكون 6 أحرف على الأقل
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>
+            تأكيد كلمة المرور <span class="required">*</span>
+          </label>
+          <div class="password-input">
+            <input 
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              formControlName="confirmPassword" 
+              placeholder="أعد إدخال كلمة المرور"
+              [class.error]="isFieldInvalid('confirmPassword')">
+            <button 
+              type="button" 
+              class="password-toggle"
+              (click)="toggleConfirmPassword()">
+              <svg *ngIf="!showConfirmPassword" class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+              </svg>
+              <svg *ngIf="showConfirmPassword" class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+              </svg>
+            </button>
+          </div>
+          <div *ngIf="isFieldInvalid('confirmPassword')" class="error-text">
+            <span *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">تأكيد كلمة المرور مطلوب</span>
+            <span *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordMismatch']">كلمات المرور غير متطابقة</span>
+          </div>
+        </div>
+
+
+        
+        <!-- Message -->
+        <div *ngIf="message" 
+             [class]="messageType === 'success' ? 'auth-message success' : 'auth-message error'">
+          {{ message }}
+        </div>
+        
+        <!-- Submit Button -->
+        <button 
+          type="submit" 
+          [disabled]="!registerForm.valid || isLoading"
+          class="auth-submit-btn">
+          <svg *ngIf="!isLoading" class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+          </svg>
+          <svg *ngIf="isLoading" class="btn-icon spinning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          {{ isLoading ? 'جاري إنشاء الحساب...' : 'إنشاء الحساب' }}
+        </button>
+      </form>
+      
+      <!-- Login Link -->
+      <div class="auth-link">
+        <p>لديك حساب بالفعل؟ <a routerLink="/login" class="link">تسجيل الدخول</a></p>
+      </div>
+    </div>
+
+    <!-- Back to Home -->
+    <div class="back-to-home">
+      <a routerLink="/" class="back-btn">
+        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+        العودة للرئيسية
+      </a>
+    </div>
+  </div>
+</div>

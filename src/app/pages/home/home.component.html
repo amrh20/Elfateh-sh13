@@ -1,0 +1,364 @@
+<!-- Hero Section -->
+<section class="bg-gradient-hero text-white py-16 md:py-24 relative overflow-hidden">
+    <!-- Animated Background Elements -->
+    <div class="absolute inset-0">
+      <div class="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full animate-float"></div>
+      <div class="absolute top-20 right-20 w-16 h-16 bg-white/10 rounded-full animate-float" style="animation-delay: 1s;"></div>
+      <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-white/10 rounded-full animate-float" style="animation-delay: 2s;"></div>
+    </div>
+    
+    <div class="container mx-auto px-4 text-center relative z-10">
+      <h1 class="text-4xl md:text-6xl font-black leading-snug mb-4 animate-fade-in-up">
+        الفتح للأدوات المنزلية
+      </h1>
+      <p class="text-lg md:text-xl text-white/90 max-w-3xl mx-auto animate-fade-in-up" style="animation-delay: 200ms;">
+        أفضل المنظفات والأدوات المنزلية بأسعار منافسة وجودة عالية
+      </p>
+      <div class="w-16 h-px bg-white/20 mx-auto mt-6"></div>
+    </div>
+  </section>
+  
+  <!-- Current Order Section -->
+  <section *ngIf="currentOrder" class="py-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
+    <div class="container mx-auto px-4">
+      <!-- <div class="bg-white rounded-xl shadow-md p-4 border border-blue-100">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-4 space-x-reverse">
+            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900">طلبك الحالي</h3>
+              <p class="text-sm text-gray-600">{{ currentOrder.items.length }} منتج - {{ currentOrder.totalAmount.toFixed(2) }} ج.م</p>
+            </div>
+          </div>
+  
+          <div class="flex items-center space-x-4 space-x-reverse">
+            <span [class]="'px-3 py-1 rounded-full text-xs font-medium ' + orderService.getOrderStatusColor(currentOrder.status)">
+              {{ orderService.getOrderStatusText(currentOrder.status) }}
+            </span>
+            <a routerLink="/track-order" 
+               class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">
+              تتبع الطلب
+            </a>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </section>
+  
+      <!-- Categories Section -->
+      <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+          <!-- Simple Clean Header -->
+          <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+              الأصناف الرئيسية
+            </h2>
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto mb-8">
+              اكتشف مجموعتنا المتنوعة من الأدوات والمنظفات المنزلية
+            </p>
+            <a routerLink="/categories" class="inline-flex items-center gap-2 text-red-600 hover:text-red-700 font-medium transition-colors duration-200 btn-animate">
+              عرض الجميع
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+          
+          <!-- Simple Categories Grid -->
+          <div class="relative">
+            <swiper-container 
+              [slidesPerView]="3"
+              [spaceBetween]="24"
+              [navigation]="true"
+              [rtl]="true"
+              [autoplay]="{ delay: 4000, disableOnInteraction: false }"
+              [breakpoints]="{
+                '320': { slidesPerView: 1, spaceBetween: 16 },
+                '640': { slidesPerView: 2, spaceBetween: 20 },
+                '1024': { slidesPerView: 3, spaceBetween: 24 }
+              }"
+              class="categories-swiper">
+              <swiper-slide *ngFor="let category of categories">
+                <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border-2 border-gray-100 hover:border-red-200 transform hover:-translate-y-2 category-card">
+                  <!-- Enhanced Image Container -->
+                  <div class="relative overflow-hidden category-image p-2" style="display: flex; justify-content: center; align-items: center;">
+                    <img [src]="getCleanImageUrl(category.image)" [alt]="category.name" 
+                         class="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-700"
+                         style="width:250px;height: 250px">
+                    
+                    <!-- Enhanced Product Count Badge -->
+                    <div class="absolute top-4 right-4 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-full shadow-lg backdrop-blur-sm category-badge">
+                      <span class="text-sm font-bold">{{ category.subcategories.length || 0 }} منتج</span>
+                    </div>
+                    
+                    <!-- Hover Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  </div>
+                  
+                  <!-- Enhanced Content -->
+                  <div class="p-6 relative">
+                    <!-- Category Icon -->
+                    <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-red-200 transition-colors duration-300 category-icon">
+                      <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2H5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                        </path>
+                      </svg>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-gray-800 mb-3 group-hover:text-red-600 transition-colors duration-300">
+                      {{ category.name }}
+                    </h3>
+                    <p class="text-gray-600 mb-6 text-sm leading-relaxed group-hover:text-gray-700 transition-colors duration-300">
+                      {{ category.description }}
+                    </p>
+                    
+                    <!-- Enhanced Button -->
+                    <a routerLink="/categories" 
+                       class="inline-block btn-primary text-center w-full rounded-xl py-3 transform hover:scale-105 category-button btn-animate">
+                      تصفح الفئة
+                      <svg class="w-4 h-4 inline-block mr-2 rtl:ml-2 rtl:mr-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </swiper-slide>
+            </swiper-container>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Featured Products -->
+      <section class="py-20">
+        <div class="container mx-auto px-4">
+          <div class="flex items-center justify-between mb-12">
+            <h2 class="heading-2">المنتجات المميزة</h2>
+            <a routerLink="/all-products" class="text-red-600 hover:text-red-700 font-medium transition-colors duration-200 btn-animate">
+              عرض الجميع
+              <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+          
+          <swiper-container 
+            [slidesPerView]="3"
+            [spaceBetween]="20"
+            [navigation]="true"
+            [pagination]="{ clickable: true }"
+            [rtl]="true"
+            [autoplay]="{ delay: 5000, disableOnInteraction: false }"
+            [breakpoints]="{
+              '320': { slidesPerView: 1, spaceBetween: 10 },
+              '640': { slidesPerView: 2, spaceBetween: 15 },
+              '1024': { slidesPerView: 3, spaceBetween: 20 }
+            }"
+            class="products-swiper">
+            <swiper-slide *ngFor="let product of featuredProducts">
+              <app-product-card [product]="product"
+                               (addToCartEvent)="onAddToCart($event)">
+              </app-product-card>
+            </swiper-slide>
+          </swiper-container>
+        </div>
+      </section>
+  
+      <!-- Best Sellers -->
+      <section class="py-20 bg-gradient-to-b from-white to-gray-50" *ngIf="(bestSellers?.length || 0) > 0">
+        <div class="container mx-auto px-4">
+          <div class="flex items-center justify-between mb-12">
+            <h2 class="heading-2">الأكثر مبيعاً</h2>
+            <a routerLink="/all-products" class="text-red-600 hover:text-red-700 font-medium transition-colors duration-200">
+              عرض الجميع
+            </a>
+          </div>
+          
+          <swiper-container 
+            [slidesPerView]="3"
+            [spaceBetween]="20"
+            [navigation]="true"
+            [pagination]="{ clickable: true }"
+            [rtl]="true"
+            [autoplay]="{ delay: 5000, disableOnInteraction: false }"
+            [breakpoints]="{
+              '320': { slidesPerView: 1, spaceBetween: 10 },
+              '640': { slidesPerView: 2, spaceBetween: 15 },
+              '1024': { slidesPerView: 3, spaceBetween: 20 }
+            }"
+            class="products-swiper">
+            <swiper-slide *ngFor="let product of bestSellers">
+              <app-product-card [product]="product"
+                               (addToCartEvent)="onAddToCart($event)">
+              </app-product-card>
+            </swiper-slide>
+          </swiper-container>
+        </div>
+      </section>
+  
+      <!-- Offers Section -->
+      <section class="py-20" *ngIf="(onSaleProducts?.length || 0) > 0">
+        <div class="container mx-auto px-4">
+          <div class="flex items-center justify-between mb-12">
+            <h2 class="heading-2">العروض الخاصة</h2>
+            <a routerLink="/all-products" class="text-red-600 hover:text-red-700 font-medium transition-colors duration-200">
+              عرض الجميع
+            </a>
+          </div>
+          
+          <swiper-container 
+            [slidesPerView]="3"
+            [spaceBetween]="20"
+            [navigation]="true"
+            [pagination]="{ clickable: true }"
+            [rtl]="true"
+            [autoplay]="{ delay: 5000, disableOnInteraction: false }"
+            [breakpoints]="{
+              '320': { slidesPerView: 1, spaceBetween: 10 },
+              '640': { slidesPerView: 2, spaceBetween: 15 },
+              '1024': { slidesPerView: 3, spaceBetween: 20 }
+            }"
+            class="products-swiper">
+            <swiper-slide *ngFor="let product of onSaleProducts">
+              <app-product-card [product]="product"
+                               (addToCartEvent)="onAddToCart($event)">
+              </app-product-card>
+            </swiper-slide>
+          </swiper-container>
+        </div>
+      </section>
+  
+  <!-- Why Choose Us -->
+  <section class="py-24 bg-gradient-to-br from-red-600 via-red-700 to-red-800 text-white relative overflow-hidden">
+    <!-- Enhanced Animated Background Elements -->
+    <div class="absolute inset-0">
+      <!-- Floating geometric shapes -->
+      <div class="absolute top-20 left-16 w-40 h-40 bg-white/10 rounded-full animate-float blur-sm"></div>
+      <div class="absolute bottom-20 right-16 w-32 h-32 bg-white/10 rounded-full animate-float blur-sm" style="animation-delay: 2s;"></div>
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-white/5 rounded-full animate-pulse"></div>
+      
+      <!-- Animated lines -->
+      <div class="absolute top-0 left-0 w-full h-full">
+        <div class="absolute top-1/4 left-0 w-1 h-32 bg-gradient-to-b from-white/20 to-transparent animate-slide-down"></div>
+        <div class="absolute bottom-1/4 right-0 w-1 h-32 bg-gradient-to-t from-white/20 to-transparent animate-slide-up"></div>
+      </div>
+      
+      <!-- Grid pattern overlay -->
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute inset-0" style="background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0); background-size: 40px 40px;"></div>
+      </div>
+    </div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+      <!-- Enhanced Header -->
+      <div class="text-center mb-20">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full mb-6 animate-bounce">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+        <h2 class="text-5xl font-bold mb-6 animate-fade-in-up bg-gradient-to-r from-white to-red-100 bg-clip-text text-transparent">
+          لماذا تختار الفتح؟
+        </h2>
+        <p class="text-xl opacity-90 max-w-2xl mx-auto animate-fade-in-up" style="animation-delay: 200ms;">
+          نقدم لك تجربة تسوق استثنائية مع أفضل المنتجات وأعلى جودة
+        </p>
+      </div>
+      
+      <!-- Enhanced Features Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+        <!-- Feature 1: Quality -->
+        <div class="group text-center animate-fade-in-up transform hover:scale-105 transition-all duration-500" style="animation-delay: 300ms;">
+          <div class="relative">
+            <!-- Icon Container with enhanced styling -->
+            <div class="bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md rounded-3xl w-24 h-24 flex items-center justify-center mx-auto mb-8 group-hover:shadow-2xl group-hover:shadow-white/20 transition-all duration-500 border border-white/20">
+              <div class="bg-gradient-to-br from-red-400 to-red-600 rounded-2xl w-16 h-16 flex items-center justify-center group-hover:rotate-12 transition-transform duration-500">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+            </div>
+            
+            <!-- Floating badge -->
+            <div class="absolute -top-2 -right-2 bg-yellow-400 text-red-900 text-xs font-bold px-2 py-1 rounded-full animate-pulse">
+              ★
+            </div>
+          </div>
+          
+          <h3 class="text-2xl font-bold mb-4 group-hover:text-red-200 transition-colors duration-300">جودة عالية</h3>
+          <p class="text-lg opacity-90 leading-relaxed group-hover:opacity-100 transition-opacity duration-300">
+            نختار أفضل المنتجات من أشهر الماركات العالمية مع ضمان الجودة
+          </p>
+          
+          <!-- Hover effect line -->
+          <div class="w-0 group-hover:w-16 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent mx-auto mt-4 transition-all duration-500"></div>
+        </div>
+        
+        <!-- Feature 2: Competitive Prices -->
+        <div class="group text-center animate-fade-in-up transform hover:scale-105 transition-all duration-500" style="animation-delay: 500ms;">
+          <div class="relative">
+            <!-- Icon Container with enhanced styling -->
+            <div class="bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md rounded-3xl w-24 h-24 flex items-center justify-center mx-auto mb-8 group-hover:shadow-2xl group-hover:shadow-white/20 transition-all duration-500 border border-white/20">
+              <div class="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl w-16 h-16 flex items-center justify-center group-hover:rotate-12 transition-transform duration-500">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                </svg>
+              </div>
+            </div>
+            
+            <!-- Floating badge -->
+            <div class="absolute -top-2 -right-2 bg-green-400 text-green-900 text-xs font-bold px-2 py-1 rounded-full animate-bounce">
+              💰
+            </div>
+          </div>
+          
+          <h3 class="text-2xl font-bold mb-4 group-hover:text-green-200 transition-colors duration-300">أسعار منافسة</h3>
+          <p class="text-lg opacity-90 leading-relaxed group-hover:opacity-100 transition-opacity duration-300">
+            أفضل الأسعار مع عروض وخصومات مستمرة وضمان أفضل قيمة مقابل السعر
+          </p>
+          
+          <!-- Hover effect line -->
+          <div class="w-0 group-hover:w-16 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent mx-auto mt-4 transition-all duration-500"></div>
+        </div>
+        
+        <!-- Feature 3: Fast Delivery -->
+        <div class="group text-center animate-fade-in-up transform hover:scale-105 transition-all duration-500" style="animation-delay: 700ms;">
+          <div class="relative">
+            <!-- Icon Container with enhanced styling -->
+            <div class="bg-gradient-to-br from-white/25 to-white/10 backdrop-blur-md rounded-3xl w-24 h-24 flex items-center justify-center mx-auto mb-8 group-hover:shadow-2xl group-hover:shadow-white/20 transition-all duration-500 border border-white/20">
+              <div class="bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl w-16 h-16 flex items-center justify-center group-hover:rotate-12 transition-transform duration-500">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+              </div>
+            </div>
+            
+            <!-- Floating badge -->
+            <div class="absolute -top-2 -right-2 bg-blue-400 text-blue-900 text-xs font-bold px-2 py-1 rounded-full animate-ping">
+              🚀
+            </div>
+          </div>
+          
+          <h3 class="text-2xl font-bold mb-4 group-hover:text-blue-200 transition-colors duration-300">توصيل سريع</h3>
+          <p class="text-lg opacity-90 leading-relaxed group-hover:opacity-100 transition-opacity duration-300">
+            توصيل سريع وآمن لجميع أنحاء المدينة مع تتبع مباشر للطلب
+          </p>
+          
+          <!-- Hover effect line -->
+          <div class="w-0 group-hover:w-16 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent mx-auto mt-4 transition-all duration-500"></div>
+        </div>
+      </div>
+      
+      <!-- Call to Action -->
+      <div class="text-center mt-16 animate-fade-in-up" style="animation-delay: 900ms;">
+        <button class="bg-white text-red-600 px-8 py-4 rounded-full font-bold text-lg hover:bg-red-50 hover:shadow-2xl hover:shadow-white/20 transform hover:scale-105 transition-all duration-300 border-2 border-white/20">
+          ابدأ التسوق الآن
+        </button>
+        <p class="text-white/80 mt-4 text-sm">انضم لآلاف العملاء الراضين</p>
+      </div>
+    </div>
+  </section>

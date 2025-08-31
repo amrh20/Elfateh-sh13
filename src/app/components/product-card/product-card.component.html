@@ -1,0 +1,171 @@
+<div class="product-card bg-white rounded-2xl shadow-lg
+ transition-all duration-500 overflow-hidden backdrop-blur-sm" >
+  <!-- Product Image -->
+  <div class="relative overflow-hidden bg-gray-100" style="display: flex; justify-content: center; align-items: center;">
+
+    <img [src]="product?.images[0] || product.image" [alt]="product.name" 
+         class="w-full object-cover transition-transform duration-700 hover:shadow-inner" style="height: 320px;width:180px">
+    
+    <!-- Close Button (X) -->
+    <!-- <button class="absolute top-2 right-2 w-8 h-8 bg-white/90
+     backdrop-blur-sm rounded-full shadow-lg hover:bg-red-50 transition-all duration-300 hover:scale-110 z-30 
+     flex items-center justify-center hover:bg-red-100">
+      <svg class="w-4 h-4 text-gray-600 hover:text-red-600 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button> -->
+    
+    <!-- Product Badges Container -->
+    <div class="absolute top-4 right-12 flex flex-col gap-2 z-20 transform transition-transform duration-500">
+      
+      <!-- Featured Badge -->
+      <div *ngIf="product.featured" 
+           class="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-lg border border-purple-500">
+        ⭐ مميز
+      </div>
+      
+      <!-- Best Seller Badge -->
+      <div *ngIf="product.bestSeller || product.productType === 'bestSeller'" 
+           class="bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-lg border border-yellow-400">
+        🏆 الأكثر مبيعاً
+      </div>
+      
+      <!-- Special Offer Badge -->
+      <div *ngIf="product.specialOffer" 
+           class="bg-gradient-to-r from-green-600 to-green-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-lg border border-green-500">
+        🎁 عرض خاص
+      </div>
+      
+      <!-- Discount Badge -->
+      <div *ngIf="product.discount && product.discount > 0" 
+           class="bg-gradient-to-r from-red-600 to-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-lg border border-red-500">
+        {{ calculateDiscountPercentage() }}% خصم
+      </div>
+      
+      <!-- Sale Badge (Legacy) -->
+      <div *ngIf="product.isOnSale && !product.discount" 
+           class="bg-gradient-to-r from-red-600 to-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-lg border border-red-500">
+        {{ product.discountPercentage || 0 }}% خصم
+      </div>
+    </div>
+    
+    <!-- Wishlist Button - Always Visible -->
+    <button (click)="toggleWishlist()" 
+            [@wishlistAnimation]="wishlistAnimationState"
+            class="absolute top-4 left-4 p-2.5 bg-white/95 backdrop-blur-sm rounded-full shadow-lg hover:bg-red-50 transition-all duration-300 hover:scale-110 z-10 hover:shadow-red-200/50" style="position: absolute !important;">
+      <svg class="w-5 h-5" [class.text-red-600]="isInWishlist" [class.text-gray-500]="!isInWishlist" 
+           fill="currentColor" viewBox="0 0 24 24">
+        <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+        </path>
+      </svg>
+    </button>
+
+    <!-- Quick View Button - Always Visible -->
+    <!-- <div class="absolute inset-0 bg-black/40 flex 
+    items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
+      <a [routerLink]="['/product', product._id]" 
+         class="bg-white text-red-600 px-6 py-3 rounded-full font-semibold hover:bg-red-600 hover:text-white transition-all duration-300 transform hover:scale-105 shadow-lg">
+        عرض سريع
+        
+      </a>
+    </div> -->
+  </div>
+
+  <!-- Product Info -->
+  <div class="p-6 relative z-10 backdrop-filter backdrop-blur-sm bg-white/90">
+    <!-- Product Title -->
+    <h3 [@textAnimation]="textAnimationState"
+        class="text-xl font-bold text-gray-800 mb-3 line-clamp-1 leading-tight" style="width: 280px;">
+      {{ product.name }}
+
+    </h3>
+    
+    <!-- Product Description - Single Line with Ellipsis and Tooltip -->
+    <div class="relative mb-4">
+      <p class="text-gray-600 text-sm line-clamp-1 leading-relaxed cursor-help hover:text-red-600 transition-colors duration-300" 
+         (mouseenter)="showDescription()"
+         (mouseleave)="hideDescription()"
+         [title]="product.description">
+        {{ product.description }}
+      </p>
+      
+      <!-- Tooltip for Full Description -->
+      <div *ngIf="showDescriptionTooltip" 
+           class="absolute bottom-full left-0 right-0 mb-2 bg-black/90 text-white p-3 rounded-lg text-sm leading-relaxed z-50 shadow-xl backdrop-blur-sm"
+           (mouseenter)="showDescription()"
+           (mouseleave)="hideDescription()">
+        <div class="text-center font-medium mb-2 text-red-300">الوصف الكامل</div>
+        <div class="text-right">{{ product.description }}</div>
+        
+        <!-- Arrow pointing down -->
+        <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-black/90"></div>
+      </div>
+    </div>
+
+    <!-- Rating -->
+    <div class="flex items-center mb-4">
+      <div class="flex text-yellow-400">
+        <svg *ngFor="let star of [1,2,3,4,5]" class="w-4 h-4" 
+             [class.text-yellow-400]="star <= product.rating" 
+             [class.text-gray-300]="star > product.rating"
+             fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
+          </path>
+        </svg>
+      </div>
+      <!-- <span class="text-sm text-gray-500 mr-2 font-medium">({{ product.reviews }})</span> -->
+    </div>
+
+    <!-- Price and Brand -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex flex-col space-y-2">
+        <!-- Current Price (After Discount) -->
+        <div class="flex items-center space-x-3 space-x-reverse">
+          <span class="text-2xl font-bold text-red-600 transition-all duration-300 hover:text-red-700">
+            {{ getCurrentPrice() }} ج.م
+          </span>
+          
+          <!-- Original Price (Struck Through) -->
+          <span *ngIf="hasDiscount()" 
+                class="text-lg text-gray-400 line-through font-medium">
+            {{ product.price }} ج.م
+          </span>
+        </div>
+        
+        <!-- Discount Amount -->
+        <div *ngIf="hasDiscount()" class="flex items-center space-x-2 space-x-reverse">
+          <span class="text-sm text-green-600 font-semibold bg-green-50 px-2 py-0.5 rounded-md">
+            توفير {{ getDiscountAmount() }} ج.م
+          </span>
+          <span class="text-xs text-gray-500">
+            ({{ calculateDiscountPercentage() }}% خصم)
+          </span>
+        </div>
+      </div>
+      
+      <!-- Brand Badge -->
+      <span *ngIf="product.brand" class="text-sm text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full font-medium hover:bg-gray-200 transition-all duration-300">
+        {{ product.brand }}
+      </span>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 sm:space-x-reverse" style="display: flex; justify-content: center; align-items: center;gap: 10px;">
+      <button (click)="addToCart()" 
+              [@cartAnimation]="cartAnimationState"
+              [disabled]="!product.stock"
+              class="btn-main w-full">
+        <!-- إزالة العناصر المتداخلة التي قد تسبب المشكلة -->
+        <span class="relative z-10 !opacity-100">{{ product.stock ? 'أضف للسلة' : 'غير متوفر' }}</span>
+      </button>
+      
+      <a [routerLink]="['/product', product._id]" 
+         class="border-2 border-red-600 text-red-600 px-4 rounded-xl font-semibold hover:bg-red-600 
+         hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg
+          hover:shadow-red-200/50 text-center mt-0" style="padding: 10px;margin: 0;">
+        التفاصيل
+
+      </a>
+    </div>
+  </div>
+</div>

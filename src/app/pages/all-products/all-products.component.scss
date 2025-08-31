@@ -1,0 +1,372 @@
+// Custom styles for All Products page
+
+.form-group {
+  @apply relative;
+}
+
+// Filters form layout
+.filters-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// Enhanced responsive design for all products page
+.filters-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+// Responsive improvements
+@media (max-width: 1024px) {
+  .filters-form {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .filters-form {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  // Adjust header section
+  .bg-gradient-to-r {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+  
+  h1 {
+    font-size: 2.5rem !important;
+  }
+  
+  p {
+    font-size: 1.125rem !important;
+  }
+  
+  // Adjust search bar
+  .max-w-2xl {
+    max-width: 100%;
+  }
+  
+  .px-6.py-4 {
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+  }
+  
+  // Adjust filter actions
+  .flex.items-center.justify-between {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .text-sm {
+    text-align: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  .bg-gradient-to-r {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  
+  h1 {
+    font-size: 2rem !important;
+  }
+  
+  p {
+    font-size: 1rem !important;
+  }
+  
+  .px-6.py-4 {
+    padding: 0.875rem 1rem;
+    font-size: 0.875rem;
+  }
+  
+  .filters-form {
+    padding: 0.75rem;
+  }
+  
+  .form-group input,
+  .form-group select {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.8rem;
+  }
+}
+
+// Ensure form elements are properly aligned
+.form-group {
+  display: flex;
+  flex-direction: column;
+  
+  label {
+    margin-bottom: 0.5rem;
+    text-align: right;
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.875rem;
+  }
+  
+  input, select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background-color: white;
+    transition: all 0.2s ease-in-out;
+    
+    &:hover {
+      border-color: #9ca3af;
+    }
+    
+    &:focus {
+      outline: none;
+      border-color: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// Responsive grid adjustments
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1025px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+// Sticky header shadow effect
+.sticky {
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+// Form input focus effects
+input:focus, select:focus {
+  @apply ring-2 ring-red-500 border-transparent;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+}
+
+// Button hover effects
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+// Pagination button styles
+.pagination-button {
+  @apply px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-200;
+}
+
+.pagination-button.active {
+  @apply text-white bg-red-600 border-red-600;
+}
+
+.pagination-button:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+// Loading animation
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+// Responsive text sizes
+@media (max-width: 640px) {
+  h1 {
+    @apply text-3xl;
+  }
+  
+  .container {
+    @apply px-4;
+  }
+}
+
+// Filter form responsive layout
+@media (max-width: 1024px) {
+  form {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  form {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Search bar responsive
+@media (max-width: 768px) {
+  .search-container {
+    @apply px-4;
+  }
+  
+  input[type="text"] {
+    @apply text-base;
+  }
+}
+
+// Product grid gap adjustments
+@media (max-width: 640px) {
+  .grid {
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 641px) {
+  .grid {
+    gap: 2rem;
+  }
+}
+
+// Products grid responsive improvements
+@media (max-width: 1024px) {
+  .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3 {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3 {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .py-12 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .py-12 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+}
+
+// Pagination responsive improvements
+@media (max-width: 768px) {
+  .flex.items-center.justify-center {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .space-x-2.space-x-reverse {
+    gap: 0.25rem;
+  }
+  
+  .px-4.py-2 {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .w-5.h-5 {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .px-4.py-2 {
+    padding: 0.375rem 0.625rem;
+    font-size: 0.8rem;
+  }
+  
+  .w-5.h-5 {
+    width: 1rem;
+    height: 1rem;
+  }
+}

@@ -1,0 +1,399 @@
+// Essential Wishlist Styles
+.wishlist-container {
+  .wishlist-header h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 2rem;
+  }
+
+  .wishlist-info-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    
+    .info-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      
+      .info-text {
+        h2 {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: #1f2937;
+        }
+        
+        p {
+          color: #4b5563;
+          font-size: 0.875rem;
+          margin-top: 0.25rem;
+        }
+      }
+      
+      .clear-button {
+        color: #dc2626;
+        font-size: 0.875rem;
+        font-weight: 600;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.375rem;
+        transition: all 0.2s;
+        
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+    }
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    
+    .product-card {
+      transition: all 0.3s;
+      
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  .quick-actions {
+    margin-top: 3rem;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    
+    h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 1rem;
+    }
+    
+    .actions-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      
+      .add-all-btn {
+        background-color: #dc2626;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.375rem;
+        transition: all 0.3s;
+        font-weight: 600;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        
+        svg {
+          width: 1.25rem;
+          height: 1.25rem;
+          display: inline-block;
+          margin-left: 0.5rem;
+        }
+      }
+      
+      .continue-shopping-btn {
+        background-color: #e5e7eb;
+        color: #374151;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.375rem;
+        transition: all 0.3s;
+        text-align: center;
+        font-weight: 600;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        
+        svg {
+          width: 1.25rem;
+          height: 1.25rem;
+          display: inline-block;
+          margin-left: 0.5rem;
+        }
+      }
+    }
+  }
+
+  .empty-wishlist {
+    text-align: center;
+    padding: 4rem 0;
+    
+    .empty-card {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      padding: 3rem;
+      max-width: 28rem;
+      margin: 0 auto;
+      
+      .wishlist-empty-icon {
+        margin-bottom: 1.5rem;
+        
+        svg {
+          width: 6rem;
+          height: 6rem;
+          color: #9ca3af;
+          margin: 0 auto;
+          animation: heartBeat 2s ease-in-out infinite;
+        }
+      }
+      
+      h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #4b5563;
+        margin-bottom: 1rem;
+      }
+      
+      p {
+        color: #6b7280;
+        margin-bottom: 2rem;
+      }
+      
+      .browse-products-btn {
+        background-color: #dc2626;
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 0.375rem;
+        transition: all 0.3s;
+        font-weight: 600;
+        transform: scale(1);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        
+        svg {
+          width: 1.25rem;
+          height: 1.25rem;
+          display: inline-block;
+          margin-left: 0.5rem;
+        }
+      }
+    }
+  }
+}
+
+// Essential Animation
+@keyframes heartBeat {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.1); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.1); }
+  70% { transform: scale(1); }
+}
+
+// Enhanced responsive design for wishlist page
+.wishlist-empty-icon {
+  @media (max-width: 768px) {
+    .w-24.h-24 {
+      width: 5rem;
+      height: 5rem;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .w-24.h-24 {
+      width: 4rem;
+      height: 4rem;
+    }
+  }
+}
+
+// Responsive improvements
+@media (max-width: 1024px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-2.xl\\:grid-cols-2 {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .py-8 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+  
+  .mb-8 {
+    margin-bottom: 1.5rem;
+  }
+  
+  .py-16 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  
+  .p-12 {
+    padding: 2rem;
+  }
+  
+  .max-w-md {
+    max-width: 100%;
+  }
+  
+  // Adjust header layout
+  .flex.items-center.justify-between {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .text-xl {
+    font-size: 1.25rem;
+  }
+  
+  .text-sm {
+    font-size: 0.875rem;
+  }
+  
+  // Adjust buttons
+  .px-6.py-3 {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+  
+  .px-8.py-3 {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+  
+  .px-3.py-2 {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  // Adjust grid
+  .grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-2.xl\\:grid-cols-2 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .gap-8.lg\\:gap-12 {
+    gap: 1rem;
+  }
+  
+  // Adjust empty state
+  .text-2xl {
+    font-size: 1.5rem;
+  }
+  
+  .text-lg {
+    font-size: 1.125rem;
+  }
+  
+  .w-16.h-16 {
+    width: 4rem;
+    height: 4rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  .py-8 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  
+  .mb-8 {
+    margin-bottom: 1rem;
+  }
+  
+  .py-16 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+  
+  .p-12 {
+    padding: 1.5rem;
+  }
+  
+  .mb-6 {
+    margin-bottom: 0.75rem;
+  }
+  
+  .mb-8 {
+    margin-bottom: 0.75rem;
+  }
+  
+  .mb-4 {
+    margin-bottom: 0.5rem;
+  }
+  
+  // Adjust header
+  .text-xl {
+    font-size: 1.125rem;
+  }
+  
+  .text-sm {
+    font-size: 0.8rem;
+  }
+  
+  // Adjust buttons
+  .px-6.py-3 {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.8rem;
+  }
+  
+  .px-8.py-3 {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.8rem;
+  }
+  
+  .px-3.py-2 {
+    padding: 0.375rem 0.625rem;
+    font-size: 0.75rem;
+  }
+  
+  // Adjust empty state
+  .text-2xl {
+    font-size: 1.25rem;
+  }
+  
+  .text-lg {
+    font-size: 1rem;
+  }
+  
+  .w-16.h-16 {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  .w-5.h-5 {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+// Button hover effects responsive
+@media (hover: none) {
+  .hover\\:scale-105:hover {
+    transform: none;
+  }
+  
+  .hover\\:bg-red-700:hover {
+    background-color: #dc2626;
+  }
+  
+  .hover\\:text-red-700:hover {
+    color: #b91c1c;
+  }
+  
+  .hover\\:bg-red-50:hover {
+    background-color: #fef2f2;
+  }
+}

@@ -1,0 +1,68 @@
+<div class="bg-gray-50 min-h-screen py-8">
+  <div class="container mx-auto px-4">
+
+    <div *ngIf="wishlistItems.length > 0">
+      <!-- Header -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-xl font-semibold text-gray-800">
+              المنتجات المفضلة ({{ wishlistItems.length }})
+            </h2>
+            <p class="text-gray-600 text-sm mt-1">
+              احفظ المنتجات التي تريدها لشرائها لاحقاً
+            </p>
+          </div>
+          
+          <div style="display: flex; gap: 10px;">
+            <button (click)="addAllToCart()" 
+          class="bg-red-600 text-white px-6 py-3 rounded-md hover:bg-red-700 transition-all duration-300 font-semibold hover:scale-105 transform shadow-md hover:shadow-lg">
+    <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
+    </svg>
+    إضافة الكل للسلة
+  </button>
+          <button (click)="clearWishlist()" 
+                  class="text-red-600 hover:text-red-700 text-sm font-semibold hover:bg-red-50 px-3 py-2 rounded-md transition-all duration-200">
+            مسح الكل
+          </button>
+          </div>
+          
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+        <app-product-card *ngFor="let product of wishlistItems" 
+                         [product]="product"
+                         (addToCartEvent)="onAddToCart($event)">
+        </app-product-card>
+      </div>
+
+
+    </div>
+
+    <!-- Empty Wishlist -->
+    <div *ngIf="wishlistItems.length === 0" class="text-center py-16">
+      <div class="bg-white rounded-lg shadow-md p-12 max-w-md mx-auto">
+        <div class="wishlist-empty-icon">
+          <svg class="w-24 h-24 text-gray-400 mx-auto mb-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+            </path>
+          </svg>
+        </div>
+        <h2 class="text-2xl font-semibold text-gray-600 mb-4">قائمة المفضلة فارغة</h2>
+        <p class="text-gray-500 mb-8">
+          لم تقم بإضافة أي منتجات إلى المفضلة بعد. ابدأ بتصفح منتجاتنا وأضف ما يعجبك!
+        </p>
+        <a routerLink="/categories" 
+           class="bg-red-600 text-white px-8 py-3 rounded-md hover:bg-red-700 transition-all duration-300 font-semibold hover:scale-105 transform shadow-md hover:shadow-lg">
+          <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+          </svg>
+          تصفح المنتجات
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

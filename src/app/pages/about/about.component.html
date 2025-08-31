@@ -1,0 +1,115 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-br from-red-600 to-red-800 text-white py-20">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-4xl md:text-6xl font-bold mb-6">من نحن</h1>
+      <p class="text-xl md:text-2xl mb-8 opacity-90">نحن شركة الفتح للأدوات المنزلية</p>
+      <p class="text-lg opacity-80 max-w-3xl mx-auto">
+        منذ عام {{ companyInfo.founded }} ونحن نقدم أفضل الأدوات المنزلية للمصريين بجودة عالية وأسعار منافسة
+      </p>
+    </div>
+  </section>
+
+  <!-- Company Info Section -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <!-- Company Image -->
+        <div class="text-center md:text-right">
+          <img src="assets/images/logo.png" alt="الفتح للأدوات المنزلية" class="w-64 h-64 mx-auto md:mx-0 rounded-lg shadow-lg">
+        </div>
+        
+        <!-- Company Details -->
+        <div class="space-y-6">
+          <h2 class="text-3xl font-bold text-gray-900 mb-6">عن شركتنا</h2>
+          
+          <div class="space-y-4">
+            <div>
+              <h3 class="text-xl font-semibold text-red-600 mb-2">رؤيتنا</h3>
+              <p class="text-gray-700">{{ companyInfo.vision }}</p>
+            </div>
+            
+            <div>
+              <h3 class="text-xl font-semibold text-red-600 mb-2">مهمتنا</h3>
+              <p class="text-gray-700">{{ companyInfo.mission }}</p>
+            </div>
+            
+            <div>
+              <h3 class="text-xl font-semibold text-red-600 mb-2">قيمنا</h3>
+              <ul class="list-disc list-inside space-y-1 text-gray-700">
+                <li *ngFor="let value of companyInfo.values">{{ value }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Section -->
+  <section class="py-16 bg-red-600 text-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12">إحصائياتنا</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div *ngFor="let stat of stats" class="text-center">
+          <div class="text-4xl md:text-5xl font-bold mb-2">{{ stat.number }}</div>
+          <div class="text-lg opacity-90">{{ stat.label }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">خدماتنا</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div *ngFor="let service of services" class="text-center p-6 rounded-lg bg-gray-50 hover:bg-red-50 transition-colors duration-300">
+          <div class="text-4xl mb-4">{{ service.icon }}</div>
+          <h3 class="text-xl font-semibold mb-3 text-gray-900">{{ service.title }}</h3>
+          <p class="text-gray-700">{{ service.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-12 text-gray-900">فريق العمل</h2>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div *ngFor="let member of team" class="text-center bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <img [src]="member.image" [alt]="member.name" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+          <h3 class="text-xl font-semibold mb-2 text-gray-900">{{ member.name }}</h3>
+          <p class="text-red-600 font-medium mb-3">{{ member.position }}</p>
+          <p class="text-gray-700">{{ member.description }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="py-16 bg-red-600 text-white">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">تواصل معنا</h2>
+      <p class="text-xl mb-8 opacity-90">نحن هنا لمساعدتك في كل ما تحتاجه</p>
+      <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <div class="text-center">
+          <div class="text-3xl mb-4">📞</div>
+          <h3 class="text-xl font-semibold mb-2">الهاتف</h3>
+          <p>{{ contactInfo.phone }}</p>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl mb-4">📧</div>
+          <h3 class="text-xl font-semibold mb-2">البريد الإلكتروني</h3>
+          <p>{{ contactInfo.email }}</p>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl mb-4">📍</div>
+          <h3 class="text-xl font-semibold mb-2">العنوان</h3>
+          <p>{{ contactInfo.address }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div> 

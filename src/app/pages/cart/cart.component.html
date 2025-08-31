@@ -1,0 +1,612 @@
+<div class="bg-gray-50 min-h-screen py-8 cart-container">
+  <div class="container mx-auto px-4">
+    <h1 class="text-3xl md:text-3xl font-bold text-gray-800 mb-6 md:mb-8 text-center md:text-right">سلة التسوق</h1>
+
+    <!-- Step Progress Indicator -->
+    <div *ngIf="cartItems.length > 0" class="mb-8">
+      <!-- Desktop Version -->
+      <div class="hidden md:flex items-center justify-center step-progress desktop-only">
+        <!-- Step 1 -->
+        <div class="flex items-center">
+          <div [class]="'w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold transition-all duration-300 ' + (currentStep >= 1 ? 'bg-red-600' : 'bg-gray-300')">
+            <span *ngIf="currentStep > 1">✓</span>
+            <span *ngIf="currentStep <= 1">1</span>
+          </div>
+          <span [class]="'mr-3 font-medium transition-all duration-300 ' + (currentStep >= 1 ? 'text-red-600' : 'text-gray-500')">مراجعة السلة</span>
+        </div>
+        
+        <!-- Connector Line -->
+        <div class="relative mx-4">
+          <div class="w-32 h-1 bg-gray-300"></div>
+          <div [class]="'absolute top-0 left-0 h-1 transition-all duration-500 ' + (currentStep >= 2 ? 'bg-red-600 w-full' : 'bg-red-600 w-0')"></div>
+        </div>
+        
+        <!-- Step 2 -->
+        <div class="flex items-center">
+          <div [class]="'w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold transition-all duration-300 ' + (currentStep >= 2 ? 'bg-red-600' : 'bg-gray-300')">
+            2
+          </div>
+          <span [class]="'mr-3 font-medium transition-all duration-300 ' + (currentStep >= 2 ? 'text-red-600' : 'text-gray-500')">بيانات التوصيل</span>
+        </div>
+      </div>
+
+      <!-- Mobile Version -->
+      <div class="block md:hidden step-progress-mobile mobile-only">
+        <div class="bg-white rounded-xl shadow-lg p-5 mx-3 border border-gray-100">
+          <div class="flex items-start justify-between relative">
+            <!-- Step 1 -->
+            <div class="flex flex-col items-center flex-1 relative z-10">
+              <div [class]="'w-12 h-12 rounded-full flex items-center justify-center text-white font-bold transition-all duration-300 text-sm shadow-lg ' + (currentStep >= 1 ? 'bg-red-600 scale-110' : 'bg-gray-300')">
+                <span *ngIf="currentStep > 1" class="text-lg">✓</span>
+                <span *ngIf="currentStep <= 1" class="text-base">1</span>
+              </div>
+              <span [class]="'mt-3 text-sm font-semibold text-center transition-all duration-300 leading-tight ' + (currentStep >= 1 ? 'text-red-600' : 'text-gray-500')">
+                مراجعة السلة
+              </span>
+            </div>
+            
+            <!-- Progress Line Container -->
+            <div class="flex-1 flex items-center justify-center px-4 pt-6">
+              <div class="w-full h-1 bg-gray-200 rounded-full relative overflow-hidden">
+                <div [class]="'h-full transition-all duration-700 ease-in-out rounded-full ' + (currentStep >= 2 ? 'bg-gradient-to-r from-red-500 to-red-600 w-full' : 'bg-red-600 w-0')"></div>
+              </div>
+            </div>
+            
+            <!-- Step 2 -->
+            <div class="flex flex-col items-center flex-1 relative z-10">
+              <div [class]="'w-12 h-12 rounded-full flex items-center justify-center text-white font-bold transition-all duration-300 text-sm shadow-lg ' + (currentStep >= 2 ? 'bg-red-600 scale-110' : 'bg-gray-300')">
+                <span class="text-base">2</span>
+              </div>
+              <span [class]="'mt-3 text-sm font-semibold text-center transition-all duration-300 leading-tight ' + (currentStep >= 2 ? 'text-red-600' : 'text-gray-500')">
+                بيانات التوصيل
+              </span>
+            </div>
+          </div>
+          
+          <!-- Current Step Description -->
+          <div class="mt-6 pt-4 border-t border-gray-100 text-center">
+            <div class="bg-gray-50 rounded-lg p-3">
+              <p class="text-sm text-gray-700 font-medium">
+                <span *ngIf="currentStep === 1">✨ تأكد من المنتجات وطبق كوبون الخصم إن وجد</span>
+                <span *ngIf="currentStep === 2">📝 أدخل بياناتك وعنوان التوصيل لإتمام الطلب</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 1: Cart Review -->
+    <div *ngIf="cartItems.length > 0 && currentStep === 1" class="grid grid-cols-1 lg:grid-cols-3 gap-8 step-content">
+      <!-- Cart Items -->
+      <div class="lg:col-span-2">
+        <div class="bg-white rounded-lg shadow-md">
+          <div class="p-6 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-800">المنتجات ({{ totalItems }})</h2>
+          </div>
+          
+          <div class="divide-y divide-gray-200">
+            <div *ngFor="let item of cartItems" class="p-6">
+              <div class="flex items-center space-x-4 space-x-reverse">
+                <!-- Product Image -->
+                <div class="relative">
+                  <img [src]="item.product.images?.[0]" [alt]="item.product.name" 
+                       class="w-20 h-20 object-cover rounded-md shadow-sm hover:shadow-md transition-shadow duration-300">
+                  <!-- Stock Badge -->
+                  <div *ngIf="item.product.stock && item.product.stock <= 5" 
+                       class="absolute -top-2 -right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
+                    آخر {{ item.product.stock }}
+                  </div>
+                </div>
+                
+                <!-- Product Info -->
+                <div class="flex-1">
+                  <h3 class="text-lg font-semibold text-gray-800 mb-1">
+                    {{ item.product.name }}
+                  </h3>
+                  <p class="text-gray-600 text-sm mb-2">{{ item.product.brand || 'بدون علامة تجارية' }}</p>
+                  
+                  <!-- Price -->
+                  <div class="flex items-center space-x-2 space-x-reverse">
+                    <span class="text-lg font-bold text-red-600">
+                      {{ getItemPrice(item) }} ج.م
+                    </span>
+                    <span *ngIf="item.product.originalPrice && item.product.originalPrice > item.product.price" 
+                          class="text-sm text-gray-500 line-through">
+                      {{ item.product.originalPrice * item.quantity }} ج.م
+                    </span>
+                    <!-- Savings Badge -->
+                    <span *ngIf="item.product.originalPrice && item.product.originalPrice > item.product.price" 
+                          class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">
+                      توفير {{ ((item.product.originalPrice - item.product.price) * item.quantity).toFixed(0) }} ج.م
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Quantity Controls -->
+                <div class="flex items-center space-x-2 space-x-reverse">
+                  <button (click)="updateQuantity(item.product._id || item.product.id, item.quantity - 1)" 
+                          [disabled]="item.quantity <= 1"
+                          class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 transition-all duration-200 hover:scale-105 disabled:hover:scale-100">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                    </svg>
+                  </button>
+                  <span class="w-12 text-center font-semibold text-gray-800 bg-gray-50 py-1 rounded-md">{{ item.quantity }}</span>
+                  <button (click)="updateQuantity(item.product._id || item.product.id, item.quantity + 1)" 
+                          class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-50 transition-all duration-200 hover:scale-105">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Remove Button -->
+                <button (click)="removeFromCart(item.product._id || item.product.id)" 
+                        class="text-red-600 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-all duration-200 hover:scale-110"
+                        title="إزالة من السلة">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                    </path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-lg shadow-md p-6 sticky top-8">
+          <h2 class="text-xl font-semibold text-gray-800 mb-6">ملخص الطلب</h2>
+          
+          <div class="space-y-4">
+            <div class="flex justify-between">
+              <span class="text-gray-600">المجموع الفرعي:</span>
+              <span class="font-semibold">{{ subtotal }} ج.م</span>
+            </div>
+            
+            <!-- Discount - Only show if there's a discount -->
+            <div *ngIf="discount > 0" class="flex justify-between">
+              <span class="text-gray-600">الخصم:</span>
+              <span class="font-semibold text-green-600">-{{ discount }} ج.م</span>
+            </div>
+            
+            <!-- Coupon Section -->
+            <div class="border-t border-gray-200 pt-4 mb-4">
+              <h3 class="text-lg font-semibold text-gray-800 mb-3">كوبون الخصم</h3>
+              
+              <!-- Coupon Input -->
+              <div class="flex space-x-2 space-x-reverse mb-3">
+                <input type="text" [(ngModel)]="couponCode" 
+                       placeholder="أدخل كود الكوبون"
+                       class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
+                       [class.border-green-500]="isCouponValid"
+                       [class.border-red-500]="!isCouponValid && couponMessage">
+                <button (click)="applyCoupon()" 
+                        class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm">
+                  تطبيق
+                </button>
+              </div>
+              
+              <!-- Coupon Message -->
+              <div *ngIf="couponMessage" 
+                   [class]="isCouponValid ? 'text-green-600 text-sm' : 'text-red-600 text-sm'"
+                   class="mb-3">
+                {{ couponMessage }}
+              </div>
+              
+              <!-- Applied Coupon -->
+              <div *ngIf="appliedCoupon" 
+                   class="flex items-center justify-between bg-green-50 border border-green-200 rounded-md p-3">
+                <div class="flex items-center space-x-2 space-x-reverse">
+                  <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <span class="text-green-800 font-medium">{{ appliedCoupon }}</span>
+                </div>
+                <button (click)="removeCoupon()" 
+                        class="text-red-600 hover:text-red-800 text-sm">
+                  إزالة
+                </button>
+              </div>
+            </div>
+            
+            <!-- Coupon Discount -->
+            <div *ngIf="couponDiscount > 0" class="flex justify-between">
+              <span class="text-gray-600">خصم الكوبون:</span>
+              <span class="font-semibold text-green-600">-{{ couponDiscount }} ج.م</span>
+            </div>
+            
+            <!-- Shipping Cost -->
+            <div class="flex justify-between">
+              <span class="text-gray-600">رسوم التوصيل:</span>
+              <span class="font-semibold">{{ deliveryFee }} ج.م</span>
+            </div>
+            
+            <div class="border-t border-gray-200 pt-4">
+              <div class="flex justify-between">
+                <span class="text-lg font-semibold text-gray-800">المجموع الكلي:</span>
+                <span class="text-xl font-bold text-red-600">{{ total }} ج.م</span>
+              </div>
+            </div>
+          </div>
+
+          <button (click)="nextStep()" 
+                  [disabled]="!canProceedToPayment()"
+                  class="w-full bg-red-600 text-white py-3 px-6 rounded-md hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-300 mt-6 font-semibold text-lg hover:scale-105 transform shadow-lg hover:shadow-xl disabled:hover:scale-100">
+            <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+            </svg>
+            متابعة إلى الدفع
+          </button>
+
+          <div class="mt-4 text-center">
+            <a routerLink="/categories" 
+               class="text-red-600 hover:text-red-700 text-sm">
+              متابعة التسوق
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Payment Details -->
+    <div *ngIf="cartItems.length > 0 && currentStep === 2" class="step-content">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Payment Form -->
+        <div class="lg:col-span-2">
+          <div class="bg-white rounded-lg shadow-md">
+            <div class="p-6 border-b border-gray-200">
+              <h2 class="text-xl font-semibold text-gray-800">معلومات التوصيل والدفع</h2>
+            </div>
+            
+            <form [formGroup]="checkoutForm" (ngSubmit)="submitOrder()" class="p-6 checkout-form">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Full Name -->
+                <div class="md:col-span-2">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                    الاسم الكامل <span class="text-red-500">*</span>
+                  </label>
+                  <input type="text" formControlName="fullName" 
+                         [class]="'w-full px-4 py-3 border rounded-lg transition-all duration-200 ' + (isFieldInvalid('fullName') ? 'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500')"
+                         placeholder="أدخل اسمك الكامل">
+                  <div *ngIf="isFieldInvalid('fullName')" 
+                       class="error-message">
+                    الاسم الكامل مطلوب
+                  </div>
+                </div>
+
+                <!-- Mobile Number -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                    رقم الموبايل <span class="text-red-500">*</span>
+                  </label>
+                  <input type="tel" formControlName="mobileNumber" 
+                         [class]="'w-full px-4 py-3 border rounded-lg transition-all duration-200 ' + (isFieldInvalid('mobileNumber') ? 'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500')"
+                         placeholder="أدخل رقم الموبايل">
+                  <div *ngIf="isFieldInvalid('mobileNumber')" 
+                       class="error-message">
+                    رقم الموبايل مطلوب
+                  </div>
+                </div>
+
+                <!-- City -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                    المدينة <span class="text-red-500">*</span>
+                  </label>
+                  <input type="text" formControlName="city" 
+                         [class]="'w-full px-4 py-3 border rounded-lg transition-all duration-200 ' + (isFieldInvalid('city') ? 'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500')"
+                         placeholder="أدخل المدينة">
+                  <div *ngIf="isFieldInvalid('city')" 
+                       class="error-message">
+                    المدينة مطلوبة
+                  </div>
+                </div>
+
+                <!-- Delivery Address -->
+                <div class="md:col-span-2">
+                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                    عنوان التوصيل <span class="text-red-500">*</span>
+                  </label>
+                  <textarea formControlName="deliveryAddress" rows="3"
+                            [class]="'w-full px-4 py-3 border rounded-lg transition-all duration-200 ' + (isFieldInvalid('deliveryAddress') ? 'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500')"
+                            placeholder="أدخل العنوان بالتفصيل"></textarea>
+                  <div *ngIf="isFieldInvalid('deliveryAddress')" 
+                       class="error-message">
+                    عنوان التوصيل مطلوب
+                  </div>
+                </div>
+
+
+
+              </div>
+
+              <!-- Additional Notes Row -->
+              <div class="grid grid-cols-1 gap-6 mt-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">
+                    ملاحظات إضافية
+                  </label>
+                  <textarea formControlName="additionalNotes" rows="3"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
+                            placeholder="أي ملاحظات إضافية للتوصيل"></textarea>
+                </div>
+              </div>
+
+              <!-- Payment Method Row -->
+              <div class="grid grid-cols-1 gap-6 mt-6">
+                <div class="payment-method">
+                  <label class="block text-sm font-medium text-gray-700 mb-4">
+                    طريقة الدفع
+                  </label>
+                  <div class="bg-gray-50 p-4 rounded-lg border">
+                    <label class="flex items-center space-x-3 space-x-reverse cursor-pointer radio-option">
+                      <input type="radio" formControlName="paymentMethod" value="cash_on_delivery" 
+                             class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500">
+                      <div class="flex-1">
+                        <span class="text-sm font-medium text-gray-800">الدفع عند الاستلام</span>
+                        <p class="text-xs text-gray-500 mt-1">ادفع نقداً عند استلام طلبك</p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Navigation Buttons Row -->
+              <div class="mt-8 pt-6 border-t border-gray-200">
+                <div class="flex flex-col sm:flex-row gap-4 navigation-buttons">
+                  <!-- Back Button -->
+                  <button type="button" (click)="previousStep()" 
+                          class="sm:flex-1 bg-white border-2 border-gray-300 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 font-semibold text-lg flex items-center justify-center">
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+                    </svg>
+                    العودة للسلة
+                  </button>
+                  
+                  <!-- Submit Button -->
+                  <button type="submit" 
+                          [disabled]="!checkoutForm.valid || isSubmitting"
+                          class="sm:flex-1 bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-300 font-semibold text-lg flex items-center justify-center shadow-lg hover:shadow-xl disabled:hover:scale-100 submit-button">
+                    <svg *ngIf="!isSubmitting" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <svg *ngIf="isSubmitting" class="w-5 h-5 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    {{ isSubmitting ? 'جاري إرسال الطلب...' : 'إتمام الطلب' }}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="lg:col-span-1">
+          <div class="bg-white rounded-lg shadow-md p-6 sticky top-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6">ملخص الطلب</h2>
+            
+            <div class="space-y-4">
+              <div class="flex justify-between">
+                <span class="text-gray-600">المجموع الفرعي:</span>
+                <span class="font-semibold">{{ subtotal }} ج.م</span>
+              </div>
+              
+              <!-- Discount - Only show if there's a discount -->
+              <div *ngIf="discount > 0" class="flex justify-between">
+                <span class="text-gray-600">الخصم:</span>
+                <span class="font-semibold text-green-600">-{{ discount }} ج.م</span>
+              </div>
+              
+              <!-- Coupon Discount -->
+              <div *ngIf="couponDiscount > 0" class="flex justify-between">
+                <span class="text-gray-600">خصم الكوبون:</span>
+                <span class="font-semibold text-green-600">-{{ couponDiscount }} ج.م</span>
+              </div>
+              
+              <!-- Shipping Cost -->
+              <div class="flex justify-between">
+                <span class="text-gray-600">رسوم التوصيل:</span>
+                <span class="font-semibold">{{ deliveryFee }} ج.م</span>
+              </div>
+              
+              <div class="border-t border-gray-200 pt-4">
+                <div class="flex justify-between">
+                  <span class="text-lg font-semibold text-gray-800">المجموع الكلي:</span>
+                  <span class="text-xl font-bold text-red-600">{{ total }} ج.م</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Order Items Summary -->
+            <div class="mt-6 pt-6 border-t border-gray-200">
+              <h3 class="text-lg font-semibold text-gray-800 mb-4">المنتجات المطلوبة</h3>
+              <div class="space-y-3 max-h-48 overflow-y-auto">
+                <div *ngFor="let item of cartItems" class="flex items-center space-x-3 space-x-reverse">
+                  <img [src]="item.product.images?.[0]" [alt]="item.product.name" 
+                       class="w-12 h-12 object-cover rounded-md">
+                  <div class="flex-1">
+                    <p class="text-sm font-medium text-gray-800 line-clamp-1">{{ item.product.name }}</p>
+                    <p class="text-xs text-gray-500">الكمية: {{ item.quantity }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty Cart -->
+    <div *ngIf="cartItems.length === 0" class="text-center py-16">
+      <svg class="w-24 h-24 text-gray-400 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01">
+        </path>
+      </svg>
+      <h2 class="text-2xl font-semibold text-gray-600 mb-4">سلة التسوق فارغة</h2>
+      <p class="text-gray-500 mb-8">لم تقم بإضافة أي منتجات إلى سلة التسوق بعد</p>
+      <a routerLink="/categories" 
+         class="bg-red-600 text-white px-8 py-3 rounded-md hover:bg-red-700 transition-all duration-300 font-semibold hover:scale-105 transform shadow-md hover:shadow-lg">
+        <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
+        </svg>
+        تصفح المنتجات
+      </a>
+    </div>
+  </div>
+
+  <!-- Success Dialog -->
+  <div *ngIf="showSuccessDialog" class="fixed inset-0 z-50 overflow-y-auto">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm transition-opacity"></div>
+    
+    <!-- Dialog Container -->
+    <div class="flex min-h-full items-center justify-center p-4 text-center">
+      <div class="relative transform overflow-hidden rounded-2xl bg-white text-right shadow-2xl transition-all w-full max-w-md success-dialog">
+        <!-- Success Icon -->
+        <div class="bg-gradient-to-br from-green-400 to-green-600 p-8 text-center">
+          <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-white bg-opacity-20">
+            <svg class="h-12 w-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="px-6 py-8 text-center">
+          <h3 class="text-2xl font-bold text-gray-900 mb-4">تم إنشاء الطلب بنجاح! 🎉</h3>
+          <p class="text-gray-600 mb-8 leading-relaxed">
+            شكراً لك! تم استلام طلبك وسيتم التواصل معك قريباً لتأكيد التفاصيل وتحديد موعد التوصيل.
+          </p>
+          
+          <!-- Order Details -->
+          <div class="bg-gray-50 rounded-lg p-4 mb-6 text-right">
+            <h4 class="font-semibold text-gray-800 mb-3">تفاصيل الطلب:</h4>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-600">عدد المنتجات:</span>
+                <span class="font-medium">{{ totalItems }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">المجموع الكلي:</span>
+                <span class="font-bold text-green-600">{{ total }} ج.م</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">طريقة الدفع:</span>
+                <span class="font-medium">{{ checkoutForm.value.paymentMethod === 'cash_on_delivery' ? 'الدفع عند الاستلام' : 'بطاقة ائتمان' }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button (click)="closeSuccessDialog()" 
+                    class=" btn-main w-full">
+              <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+              </svg>
+              العودة للرئيسية
+            </button>
+          </div>
+          
+          <!-- Additional Info -->
+          <p class="text-xs text-gray-500 mt-6">
+            ستتلقى رسالة تأكيد على رقم هاتفك قريباً
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Authentication Popup -->
+  <div *ngIf="showAuthPopup" class="auth-popup">
+    <!-- Backdrop -->
+    <div class="auth-backdrop"></div>
+    
+    <!-- Dialog Container -->
+    <div class="auth-container">
+      <div class="auth-dialog">
+        <!-- Header -->
+        <div class="auth-header">
+          <h3>
+            {{ isLoginMode ? 'تسجيل الدخول' : 'إنشاء حساب جديد' }}
+          </h3>
+          <p>
+            {{ isLoginMode ? 'سجل دخولك لاستخدام الكوبون ولمتابعة الطلب ايضا عن اكماله' : 'أنشئ حساب جديد واستفد من الكوبون' }}
+          </p>
+        </div>
+        
+        <!-- Form -->
+        <div class="auth-form-container">
+          <form [formGroup]="authForm" (ngSubmit)="submitAuth()" class="auth-form">
+            <!-- Full Name (only for register) -->
+            <div *ngIf="!isLoginMode" class="form-group">
+              <label>
+                الاسم الكامل <span class="required">*</span>
+              </label>
+              <input type="text" formControlName="fullName" 
+                     placeholder="أدخل اسمك الكامل">
+            </div>
+            
+            <!-- Email -->
+            <div class="form-group">
+              <label>
+                البريد الإلكتروني / رقم الهاتف <span class="required">*</span>
+              </label>
+              <input type="text" formControlName="email" 
+                     placeholder="رقم الهاتف او ادخل بريدك الإلكتروني">
+            </div>
+            
+            <!-- Password -->
+            <div class="form-group">
+              <label>
+                كلمة المرور <span class="required">*</span>
+              </label>
+              <input type="password" formControlName="password" 
+                     placeholder="أدخل كلمة المرور">
+            </div>
+            
+            <!-- Message -->
+            <div *ngIf="authMessage" 
+                 [class]="authMessage.includes('نجاح') ? 'auth-message success' : 'auth-message error'">
+              {{ authMessage }}
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" 
+                    [disabled]="!authForm.valid || isAuthLoading"
+                    class="auth-submit-btn">
+              <svg *ngIf="!isAuthLoading" class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+              </svg>
+              <svg *ngIf="isAuthLoading" class="btn-icon spinning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
+              {{ isAuthLoading ? 'جاري المعالجة...' : (isLoginMode ? 'تسجيل الدخول' : 'إنشاء الحساب') }}
+            </button>
+          </form>
+          
+          <!-- Toggle Mode -->
+          <div class="auth-toggle">
+            <button (click)="toggleAuthMode()">
+              {{ isLoginMode ? 'ليس لديك حساب؟ إنشاء حساب جديد' : 'لديك حساب؟ تسجيل الدخول' }}
+            </button>
+          </div>
+        </div>
+        
+        <!-- Close Button -->
+        <div class="auth-close">
+          <button (click)="closeAuthPopup()">
+            إلغاء
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

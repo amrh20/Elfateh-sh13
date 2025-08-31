@@ -1,0 +1,414 @@
+// Essential Swiper Styles
+/* تعديل أنماط Swiper لإظهار الأسهم خارج البطاقات */
+.categories-swiper,
+.products-swiper {
+  --swiper-navigation-size: 48px;
+  --swiper-navigation-color: #dc2626;
+  --swiper-pagination-color: #dc2626;
+  padding: 0 !important;
+  margin: 0 !important;
+  position: relative !important;
+  overflow: visible !important; /* السماح بظهور العناصر خارج حدود الحاوية */
+}
+
+.bg-gradient-hero {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(185, 28, 28, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+    animation: pulse 15s infinite linear;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  }
+}
+
+/* تنسيق أسهم التنقل */
+.swiper-button-next,
+.swiper-button-prev {
+  background: white !important;
+  border: 2px solid #e5e7eb !important;
+  border-radius: 50% !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.3s ease !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 48px !important;
+  height: 48px !important;
+  z-index: 20 !important; /* زيادة z-index لضمان ظهور الأسهم فوق جميع العناصر */
+  position: absolute !important;
+  
+  &:hover {
+    background: #f3f4f6 !important;
+    border-color: #d1d5db !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  &::after {
+    font-size: 18px !important;
+    font-weight: bold !important;
+    color: #dc2626 !important;
+  }
+}
+
+/* تحديد مواضع الأسهم */
+.swiper-button-prev { left: -24px !important; }
+.swiper-button-next { right: -24px !important; }
+
+/* إخفاء نقاط التنقل */
+.swiper-pagination {
+  display: none !important;
+}
+
+/* إضافة تباعد للحاوية الرئيسية */
+.relative > swiper-container {
+  padding: 0 30px !important;
+}
+
+// Essential Category Card Styles
+.category-card {
+  position: relative;
+  overflow: hidden;
+  animation: cardEntrance 0.6s ease-out forwards;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.5s ease;
+  
+  &:nth-child(1) { animation-delay: 0.1s; }
+  &:nth-child(2) { animation-delay: 0.2s; }
+  &:nth-child(3) { animation-delay: 0.3s; }
+  &:nth-child(4) { animation-delay: 0.4s; }
+  
+  &:hover {
+    transform: translateY(-8px);
+    border-color: rgba(220, 38, 38, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(220, 38, 38, 0.1);
+    
+    .category-icon {
+      transform: rotate(5deg) scale(1.1);
+      background: linear-gradient(135deg, #fecaca, #fca5a5);
+    }
+    
+    .category-badge {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+    }
+    
+    .category-button {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(220, 38, 38, 0.3);
+    }
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #dc2626, transparent);
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+// Essential Animations
+@keyframes cardEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// Enhanced responsive design for home page
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+// Essential Component Styles
+.category-icon {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  svg {
+    transition: all 0.3s ease;
+  }
+}
+
+.heading-2 {
+  @apply text-3xl font-bold mb-2;
+  color: #1a202c;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 0.5rem;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60%;
+    height: 3px;
+    background: linear-gradient(90deg, #dc2626, transparent);
+    border-radius: 3px;
+  }
+}
+
+.category-badge {
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  backdrop-filter: blur(8px);
+}
+
+.category-button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  svg {
+    transition: transform 0.3s ease;
+  }
+  
+  &:hover svg {
+    transform: translateX(3px);
+  }
+}
+
+.category-image {
+  position: relative;
+  overflow: hidden;
+}
+
+// Hero section responsive improvements
+@media (max-width: 768px) {
+  .bg-gradient-hero {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+  
+  h1 {
+    font-size: 2.5rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  p {
+    font-size: 1rem !important;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .bg-gradient-hero {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  
+  h1 {
+    font-size: 2rem !important;
+  }
+  
+  p {
+    font-size: 0.9rem !important;
+  }
+}
+
+// Categories section responsive improvements
+@media (max-width: 1024px) {
+  .px-16 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .py-20 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+  
+  .mb-16 {
+    margin-bottom: 2rem;
+  }
+  
+  h2 {
+    font-size: 2rem !important;
+  }
+  
+  p {
+    font-size: 1rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .py-20 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  
+  .mb-16 {
+    margin-bottom: 1.5rem;
+  }
+  
+  h2 {
+    font-size: 1.75rem !important;
+  }
+  
+  p {
+    font-size: 0.9rem !important;
+  }
+}
+
+// Product swipers responsive improvements
+@media (max-width: 768px) {
+  .products-swiper {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .mb-12 {
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .products-swiper {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  .mb-12 {
+    margin-bottom: 1.5rem;
+  }
+}
+
+// Category cards responsive improvements
+.category-card {
+  @media (max-width: 768px) {
+    .category-image img {
+      height: 12rem !important;
+    }
+    
+    .p-6 {
+      padding: 1rem;
+    }
+    
+    h3 {
+      font-size: 1.125rem !important;
+    }
+    
+    p {
+      font-size: 0.875rem !important;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .category-image img {
+      height: 10rem !important;
+    }
+    
+    .p-6 {
+      padding: 0.75rem;
+    }
+    
+    h3 {
+      font-size: 1rem !important;
+    }
+    
+    p {
+      font-size: 0.8rem !important;
+    }
+    
+    .category-button {
+      padding: 0.75rem 1rem !important;
+      font-size: 0.875rem !important;
+    }
+  }
+}
+
+// Swiper navigation responsive improvements
+@media (max-width: 768px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    width: 2rem !important;
+    height: 2rem !important;
+  }
+  
+  .swiper-button-next::after,
+  .swiper-button-prev::after {
+    font-size: 1rem !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+  }
+  
+  .swiper-button-next::after,
+  .swiper-button-prev::after {
+    font-size: 0.875rem !important;
+  }
+}
+
+.from-red-500 {
+  background-color: #dc2626; 
+}
+
+.to-red-600 {
+  background-color: #dc2626; 
+}

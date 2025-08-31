@@ -1,0 +1,383 @@
+// Essential Product Card Styles
+.product-card {
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(220, 38, 38, 0.15), 0 10px 20px rgba(0, 0, 0, 0.1);
+    border-color: rgba(220, 38, 38, 0.1);
+  }
+  
+  .text-update {
+    animation: textUpdate 0.3s ease-in-out;
+  }
+  
+  .heart-update {
+    animation: heartBeat 0.4s ease-in-out;
+  }
+  
+  .button-click {
+    animation: buttonClick 0.2s ease-in-out;
+  }
+}
+
+// Essential Text Styles
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  width: 300px;
+  
+  &:hover {
+    color: #dc2626;
+    transition: color 0.3s ease;
+  }
+}
+
+// Essential Tooltip
+.product-description {
+  position: relative;
+  
+  &:hover .description-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+.description-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  z-index: 50;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 1rem;
+    border: 0.5rem solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.9);
+  }
+}
+
+// Essential Animations
+@keyframes textUpdate {
+  0% { opacity: 1; transform: translateY(0); }
+  50% { opacity: 0.7; transform: translateY(-3px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heartBeat {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.3); }
+  50% { transform: scale(0.9); }
+  75% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@keyframes buttonClick {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+// Essential Hover Effects
+.product-card {
+  img {
+    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    filter: brightness(0.98);
+    
+    &:hover {
+      transform: scale(1.08);
+      filter: brightness(1.05);
+    }
+  }
+  
+  button {
+    position: relative;
+    overflow: hidden;
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+  
+  .wishlist-button {
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    
+    &:hover {
+      background: rgba(239, 68, 68, 0.15);
+      transform: scale(1.15) rotate(5deg);
+      box-shadow: 0 6px 15px rgba(239, 68, 68, 0.2);
+    }
+    
+    &.in-wishlist {
+      background: rgba(239, 68, 68, 0.2);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+  }
+  
+  .price, .rating {
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+  
+  .sale-badge {
+    animation: badgePulse 2s ease-in-out infinite;
+  }
+}
+
+@keyframes badgePulse {
+  0% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.9; }
+}
+
+// Enhanced responsive design for product card component
+.product-card {
+  @media (max-width: 640px) {
+    transform: scale(0.98);
+    border-radius: 0.75rem;
+    
+    .p-6 {
+      padding: 0.75rem;
+    }
+
+    .text-xl {
+      font-size: 1rem;
+    }
+
+    .text-lg {
+      font-size: 1rem;
+    }
+
+    .text-sm {
+      font-size: 0.8rem;
+    }
+
+    .mb-6 { margin-bottom: 0.75rem; }
+    .mb-4 { margin-bottom: 0.5rem; }
+
+    img.w-full.object-cover {
+      height: 220px !important;
+    }
+
+    .btn-main {
+      padding: 0.625rem 0.75rem;
+      font-size: 0.875rem;
+    }
+
+    // Action buttons mobile improvements
+    .flex.flex-col.sm\\:flex-row {
+      gap: 0.75rem;
+    }
+
+    .border-2.border-red-600 {
+      padding: 0.625rem 0.75rem;
+      font-size: 0.875rem;
+      text-align: center;
+      width: 100%;
+    }
+  }
+}
+
+.btn-main {
+  background-color: #dc2626;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+}
+
+// Essential Badge Styles
+.from-purple-600 {
+  background: linear-gradient(to right, #8b5cf6, #6b21a8);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 6px rgba(139, 92, 246, 0.2);
+}
+
+.from-yellow-500 {
+  background: linear-gradient(to right, #f59e0b, #d97706);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);
+}
+
+.from-green-600 {
+  background: linear-gradient(to right, #10b981, #059669);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+}
+
+// Tooltip responsive improvements
+@media (max-width: 768px) {
+  .absolute.bottom-full.left-0.right-0 {
+    max-width: 90vw;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    .text-center.font-medium.mb-2 {
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .text-right {
+      font-size: 0.8rem;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .absolute.bottom-full.left-0.right-0 {
+    max-width: 95vw;
+    
+    .text-center.font-medium.mb-2 {
+      font-size: 0.8rem;
+      margin-bottom: 0.375rem;
+    }
+    
+    .text-right {
+      font-size: 0.75rem;
+    }
+  }
+}
+
+// Hover effects responsive
+@media (hover: none) {
+  .hover\\:scale-105:hover {
+    transform: none;
+  }
+  
+  .hover\\:bg-red-50:hover {
+    background-color: #fef2f2;
+  }
+  
+  .hover\\:text-red-600:hover {
+    color: #dc2626;
+  }
+  
+  .group-hover\\:scale-110 {
+    transform: none;
+  }
+  
+  .group-hover\\:opacity-100 {
+    opacity: 0;
+  }
+}
+
+// Animation responsive improvements
+@media (max-width: 768px) {
+  .transition-all.duration-500 {
+    transition-duration: 0.3s;
+  }
+  
+  .transition-all.duration-700 {
+    transition-duration: 0.4s;
+  }
+  
+  .transition-all.duration-300 {
+    transition-duration: 0.2s;
+  }
+}
+
+@media (max-width: 640px) {
+  .transition-all.duration-500 {
+    transition-duration: 0.2s;
+  }
+  
+  .transition-all.duration-700 {
+    transition-duration: 0.3s;
+  }
+  
+  .transition-all.duration-300 {
+    transition-duration: 0.15s;
+  }
+}
+
+// Badge positioning responsive
+@media (max-width: 768px) {
+  .absolute.-top-2.-right-2 {
+    top: -0.25rem;
+    right: -0.25rem;
+  }
+  
+  .h-7.w-7 {
+    height: 1.5rem;
+    width: 1.5rem;
+  }
+  
+  .text-xs {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .absolute.-top-2.-right-2 {
+    top: -0.125rem;
+    right: -0.125rem;
+  }
+  
+  .h-7.w-7 {
+    height: 1.25rem;
+    width: 1.25rem;
+  }
+  
+  .text-xs {
+    font-size: 0.7rem;
+  }
+}
+.top-2 {
+  top: 0.5rem;
+}
+.right-2 {
+  right: 0.5rem;
+}
+.position-absolute {
+  position: absolute;
+}
