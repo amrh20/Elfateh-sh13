@@ -134,7 +134,7 @@
       </section>
   
       <!-- Featured Products -->
-      <section class="py-20">
+      <section class="py-20" *ngIf="(featuredProducts?.length || 0) > 0">
         <div class="container mx-auto px-4">
           <div class="flex items-center justify-between mb-12">
             <h2 class="heading-2">المنتجات المميزة</h2>

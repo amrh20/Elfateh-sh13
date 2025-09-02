@@ -57,6 +57,24 @@ export interface User {
   role: string;
 }
 
+export interface UserProfileResponse {
+  success: boolean;
+  data?: {
+    _id: string;
+    username?: string;
+    fullName?: string;
+    email?: string;
+    phone?: string;
+    isActive?: boolean;
+  };
+}
+
+export interface UpdateProfileRequest {
+  username?: string;
+  fullName?: string;
+  password?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -111,11 +129,23 @@ export class AuthService {
   login(loginData: LoginRequest): Observable<LoginResponse> {
     
 
-    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, loginData).pipe(
+    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/user-login`, loginData).pipe(
       tap(response => {
-        if (response.success && response.data) {
-          // حفظ بيانات المستخدم والتوكن
-          this.setUserData(response.data.user, response.data.token);
+        if (response.success) {
+          // Handle both shapes: { data: { token, user } } or { token, user }
+          const token: string | undefined = (response as any)?.data?.token || (response as any)?.token;
+          const rawUser: any = (response as any)?.data?.user || (response as any)?.user;
+
+          if (token && rawUser) {
+            const normalizedUser: User = {
+              id: rawUser.id,
+              name: rawUser.name || rawUser.fullName || rawUser.username || '',
+              email: rawUser.email || '',
+              phone: rawUser.phone,
+              role: rawUser.role || 'user'
+            };
+            this.setUserData(normalizedUser, token);
+          }
         }
       }),
       catchError(error => {
@@ -243,5 +273,55 @@ export class AuthService {
       this.storageService.setItem('user', updatedUser);
       this.currentUserSubject.next(updatedUser);
     }
+  }
+
+  /**
+   * جلب بروفايل المستخدم الحالي
+   */
+  getMyProfile(): Observable<User | null> {
+    const headers = this.buildAuthHeaders();
+    if (!headers) {
+      return of(null);
+    }
+    return this.http.get<UserProfileResponse>(`${this.apiUrl}/users/me`, { headers }).pipe(
+      map((res) => {
+        if (!res?.success || !res.data) { return null; }
+        const u = res.data as any;
+        const user: User = {
+          id: u._id || u.id,
+          name: u.fullName || u.username || u.name || '',
+          email: u.email || '',
+          phone: u.phone,
+          role: (this.getCurrentUser()?.role) || 'user'
+        };
+        // Keep local state in sync
+        this.updateUserData(user);
+        return user;
+      }),
+      catchError(() => of(null))
+    );
+  }
+
+  /**
+   * تحديث بروفايل المستخدم الحالي
+   */
+  updateMyProfile(body: UpdateProfileRequest): Observable<boolean> {
+    const headers = this.buildAuthHeaders();
+    if (!headers) {
+      return of(false);
+    }
+    return this.http.put<UserProfileResponse>(`${this.apiUrl}/users/me`, body, { headers }).pipe(
+      map(res => !!res?.success),
+      catchError(() => of(false))
+    );
+  }
+
+  private buildAuthHeaders(): HttpHeaders | null {
+    const token = this.getToken();
+    if (!token) { return null; }
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
   }
 }

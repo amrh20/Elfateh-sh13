@@ -72,15 +72,27 @@ export class LoginComponent implements OnInit {
       // استدعاء الـ API الفعلي
       this.authService.login(loginRequest).subscribe({
         next: (response) => {
-          if (response.success && response.data) {
+          console.log('Login response:', response);
+          
+          if (response.success) {
             this.message = 'تم تسجيل الدخول بنجاح!';
             this.messageType = 'success';
             
-            this.notificationService.showSuccess(`مرحباً ${response.data.user.name}!`);
+            // Handle both response formats
+            const user = response.data?.user || (response as any).user;
+            const userName = user?.name || user?.fullName || 'المستخدم';
             
-            // التوجه للصفحة الرئيسية أو الصفحة المطلوبة
+            this.notificationService.showSuccess(`مرحباً ${userName}!`);
+            
+            // التوجه للصفحة الرئيسية
             setTimeout(() => {
-              this.router.navigate(['/']);
+              this.router.navigate(['/home']).then(success => {
+                if (success) {
+                  console.log('Navigation to /home successful');
+                } else {
+                  console.error('Navigation to /home failed');
+                }
+              });
             }, 1500);
           } else {
             // فشل في تسجيل الدخول

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { WishlistService } from '../../services/wishlist.service';
+import { AuthService, User } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -21,7 +22,9 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private cartService: CartService,
-    private wishlistService: WishlistService
+    private wishlistService: WishlistService,
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -33,20 +36,17 @@ export class HeaderComponent implements OnInit {
       this.wishlistCount = this.wishlistService.getWishlistCount();
     });
 
-    // Check if user is logged in (this should be integrated with your auth service)
-    this.checkUserLoginStatus();
+    // Subscribe to auth state
+    this.authService.isLoggedIn$.subscribe(isLogged => {
+      this.isLoggedIn = isLogged;
+    });
+
+    this.authService.currentUser$.subscribe((user: User | null) => {
+      this.userName = user?.name || 'المستخدم';
+    });
   }
 
-  checkUserLoginStatus(): void {
-    // هنا يجب أن تتكامل مع خدمة المصادقة الخاصة بك
-    // For now, we'll simulate checking localStorage or a service
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      this.isLoggedIn = true;
-      const user = JSON.parse(userData);
-      this.userName = user.name || user.fullName || 'المستخدم';
-    }
-  }
+  checkUserLoginStatus(): void {}
 
   toggleMobileMenu(): void {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
@@ -69,18 +69,8 @@ export class HeaderComponent implements OnInit {
   }
 
   logout(): void {
-    // Clear user data
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    
-    // Update status
-    this.isLoggedIn = false;
-    this.userName = '';
-    
-    // Close menu
+    this.authService.logout();
     this.closeUserMenu();
-    
-    // Optional: redirect to home or show notification
-    console.log('User logged out');
+    this.router.navigate(['/home']);
   }
 } 
