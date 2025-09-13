@@ -488,9 +488,8 @@
         <!-- Success Icon -->
         <div class="bg-gradient-to-br from-green-400 to-green-600 p-8 text-center">
           <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-white bg-opacity-20">
-            <svg class="h-12 w-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-            </svg>
+            <!-- Simple checkmark icon -->
+            <div class="text-6xl text-white font-bold">✓</div>
           </div>
         </div>
         
@@ -507,23 +506,48 @@
             <div class="space-y-2 text-sm">
               <div class="flex justify-between">
                 <span class="text-gray-600">عدد المنتجات:</span>
-                <span class="font-medium">{{ totalItems }}</span>
+                <span class="font-medium">{{ savedOrderDetails.totalItems }}</span>
               </div>
               <div class="flex justify-between">
-                <span class="text-gray-600">المجموع الكلي:</span>
-                <span class="font-bold text-green-600">{{ total }} ج.م</span>
+                <span class="text-gray-600">المجموع الفرعي:</span>
+                <span class="font-medium">{{ savedOrderDetails.subtotal }} ج.م</span>
+              </div>
+              <div *ngIf="savedOrderDetails.discount > 0" class="flex justify-between">
+                <span class="text-gray-600">خصم المنتجات:</span>
+                <span class="font-medium text-green-600">-{{ savedOrderDetails.discount }} ج.م</span>
+              </div>
+              <div *ngIf="savedOrderDetails.couponDiscount > 0" class="flex justify-between">
+                <span class="text-gray-600">خصم الكوبون:</span>
+                <span class="font-medium text-green-600">-{{ savedOrderDetails.couponDiscount }} ج.م</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">رسوم التوصيل:</span>
+                <span class="font-medium">{{ savedOrderDetails.deliveryFee }} ج.م</span>
+              </div>
+              <div class="flex justify-between border-t border-gray-300 pt-2 mt-2">
+                <span class="text-gray-600 font-semibold">المجموع الكلي:</span>
+                <span class="font-bold text-green-600">{{ savedOrderDetails.total }} ج.م</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-gray-600">طريقة الدفع:</span>
-                <span class="font-medium">{{ checkoutForm.value.paymentMethod === 'cash_on_delivery' ? 'الدفع عند الاستلام' : 'بطاقة ائتمان' }}</span>
+                <span class="font-medium">الدفع عند الاستلام</span>
               </div>
             </div>
           </div>
           
           <!-- Action Buttons -->
           <div class="flex flex-col sm:flex-row gap-3">
+            <button *ngIf="isUserAuthenticated" 
+                    (click)="goToTrackOrder()" 
+                    class="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-all duration-300 font-semibold text-lg flex items-center justify-center shadow-lg hover:shadow-xl">
+              <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+              </svg>
+              تتبع الطلب
+            </button>
+            
             <button (click)="closeSuccessDialog()" 
-                    class=" btn-main w-full">
+                    class="bg-red-600 text-white py-3 px-6 rounded-lg hover:bg-red-700 transition-all duration-300 font-semibold text-lg flex items-center justify-center shadow-lg hover:shadow-xl">
               <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
               </svg>
@@ -533,7 +557,12 @@
           
           <!-- Additional Info -->
           <p class="text-xs text-gray-500 mt-6">
-            ستتلقى رسالة تأكيد على رقم هاتفك قريباً
+            <span *ngIf="isUserAuthenticated">
+              تتبع الطلب متاح الآن من خلال حسابك
+            </span>
+            <span *ngIf="!isUserAuthenticated">
+              يرجى عمل لوجن لتتبع الطلب
+            </span>
           </p>
         </div>
       </div>

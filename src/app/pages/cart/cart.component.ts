@@ -46,6 +46,16 @@ export class CartComponent implements OnInit {
   currentStep = 1; // Step 1: Cart Review, Step 2: Payment Details
   showSuccessDialog = false; // New property for success dialog
 
+  // Saved order details for success dialog
+  savedOrderDetails = {
+    totalItems: 0,
+    subtotal: 0,
+    discount: 0,
+    couponDiscount: 0,
+    deliveryFee: 0,
+    total: 0
+  };
+
   // Areas in Zahraa El Maadi
   zahraaMaadiAreas: string[] = [
     'حي المستثمرين',
@@ -59,6 +69,11 @@ export class CartComponent implements OnInit {
     'حي أول نادي المعادي',
     'حي النرجس'
   ];
+
+  // Getter for auth service access in template
+  get isUserAuthenticated(): boolean {
+    return this.authService.isAuthenticated();
+  }
 
   constructor(
     private cartService: CartService,
@@ -257,6 +272,16 @@ export class CartComponent implements OnInit {
       const response = await this.orderService.createOrder(order).toPromise();
 
       if (response && !response.error) {
+        // Save order details before clearing cart
+        this.savedOrderDetails = {
+          totalItems: this.totalItems,
+          subtotal: this.subtotal,
+          discount: this.discount,
+          couponDiscount: this.couponDiscount,
+          deliveryFee: this.deliveryFee,
+          total: this.total
+        };
+
         // Clear cart
         this.cartService.clearCart();
 
@@ -264,10 +289,10 @@ export class CartComponent implements OnInit {
         this.showSuccessDialog = true;
 
         // After 3 seconds, redirect to home page
-        setTimeout(() => {
-          this.closeSuccessDialog();
-          this.router.navigate(['/']);
-        }, 3000);
+        // setTimeout(() => {
+        //   this.closeSuccessDialog();
+        //   this.router.navigate(['/']);
+        // }, 3000);
       } else {
         // Handle API error
         console.error('Order submission failed:', response);
@@ -286,6 +311,12 @@ export class CartComponent implements OnInit {
   closeSuccessDialog(): void {
     this.showSuccessDialog = false;
     this.router.navigate(['/']);
+  }
+
+  // Navigate to track order page
+  goToTrackOrder(): void {
+    this.showSuccessDialog = false;
+    this.router.navigate(['/track-order']);
   }
 
   private markFormGroupTouched(): void {
