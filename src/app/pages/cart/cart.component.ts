@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, ViewportScroller } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CartService } from '../../services/cart.service';
+import { OrderService } from '../../services/order.service';
+import { AuthService } from '../../services/auth.service';
 import { CartItem } from '../../models/product.model';
 import { environment } from '../../../environments/environment';
 
@@ -27,6 +29,7 @@ export class CartComponent implements OnInit {
   couponDiscount: number = 0;
   isCouponValid: boolean = false;
   couponMessage: string = '';
+  isCouponLoading: boolean = false;
   
   // Fixed shipping cost
   deliveryFee: number = 20;
@@ -45,6 +48,8 @@ export class CartComponent implements OnInit {
 
   constructor(
     private cartService: CartService,
+    private orderService: OrderService,
+    private authService: AuthService,
     private router: Router,
     private viewportScroller: ViewportScroller,
     private fb: FormBuilder,
@@ -60,10 +65,13 @@ export class CartComponent implements OnInit {
     });
     
     this.authForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, this.emailOrPhoneValidator]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      fullName: ['', [Validators.required, Validators.minLength(3)]]
+      fullName: ['']
     });
+
+    // Login is default → fullName not required
+    this.setAuthValidatorsForMode();
   }
 
   ngOnInit(): void {
@@ -109,14 +117,18 @@ export class CartComponent implements OnInit {
       this.discount = 0;
     }
 
-    // Calculate total with coupon and shipping
-    this.total = this.subtotal - this.discount - this.couponDiscount + this.deliveryFee;
+    // Calculate total: subtotal + shipping - product discount - coupon discount
+    this.total = this.subtotal + this.deliveryFee - this.discount - this.couponDiscount;
+    
+    // Ensure total is not negative
+    if (this.total < 0) {
+      this.total = 0;
+    }
   }
 
   applyCoupon(): void {
     // Check if user is authenticated
-    const token = localStorage.getItem('token');
-    if (!token) {
+    if (!this.authService.isAuthenticated()) {
       this.showAuthPopup = true;
       this.isLoginMode = true;
       this.couponMessage = 'يرجى تسجيل الدخول أولاً لاستخدام الكوبون';
@@ -129,40 +141,54 @@ export class CartComponent implements OnInit {
       return;
     }
 
-    // Simulate coupon validation - you can replace this with actual API call
-    const validCoupons: { [key: string]: number } = {
-      'WELCOME10': 10, // 10% discount
-      'SAVE20': 20,    // 20% discount
-      'FREESHIP': 20,  // Free shipping (20 LE)
-      'DISCOUNT50': 50 // 50 LE discount
-    };
+    this.isCouponLoading = true;
+    this.couponMessage = '';
 
-    const coupon = this.couponCode.trim().toUpperCase();
+    // Calculate total amount including shipping before discount check
+    const totalAmountForDiscount = this.subtotal + this.deliveryFee;
     
-    if (validCoupons[coupon]) {
-      this.appliedCoupon = coupon;
-      this.isCouponValid = true;
-      
-      if (coupon === 'FREESHIP') {
-        this.couponDiscount = this.deliveryFee;
-        this.couponMessage = 'تم تطبيق الكوبون! الشحن مجاني';
-      } else if (coupon === 'DISCOUNT50') {
-        this.couponDiscount = 50;
-        this.couponMessage = `تم تطبيق الكوبون! خصم ${this.couponDiscount} جنيه`;
-      } else {
-        // Percentage discount
-        const discountPercentage = validCoupons[coupon];
-        this.couponDiscount = (this.subtotal * discountPercentage) / 100;
-        this.couponMessage = `تم تطبيق الكوبون! خصم ${discountPercentage}%`;
+    // Call the discount API
+    this.orderService.checkDiscount(this.couponCode.trim(), totalAmountForDiscount).subscribe({
+      next: (response) => {
+        console.log('discount response',response);
+        this.isCouponLoading = false;
+        
+        if (response.error) {
+          // Handle API error
+          this.appliedCoupon = '';
+          this.couponDiscount = 0;
+          this.isCouponValid = false;
+          this.couponMessage = 'كود الكوبون غير صحيح';
+        } else {
+          // Handle successful response
+          this.appliedCoupon = this.couponCode.trim().toUpperCase();
+          this.isCouponValid = true;
+          
+          // Use the discount amount from API response
+          if (response.data && response.data.discountAmount !== undefined) {
+            this.couponDiscount = parseFloat(response.data.discountAmount);
+            this.couponMessage = `تم تطبيق الكوبون! خصم ${this.couponDiscount} جنيه`;
+          } else if (response.amount !== undefined) {
+            this.couponDiscount = parseFloat(response.amount);
+            this.couponMessage = `تم تطبيق الكوبون! خصم ${this.couponDiscount} جنيه`;
+          } else {
+            // Fallback if amount structure is different
+            this.couponDiscount = parseFloat(response.discountAmount || response.discount || 0);
+            this.couponMessage = `تم تطبيق الكوبون! خصم ${this.couponDiscount} جنيه`;
+          }
+          
+          this.calculateTotals();
+        }
+      },
+      error: (error) => {
+        this.isCouponLoading = false;
+        this.appliedCoupon = '';
+        this.couponDiscount = 0;
+        this.isCouponValid = false;
+        this.couponMessage = 'حدث خطأ أثناء التحقق من الكوبون، يرجى المحاولة مرة أخرى';
+        console.error('Coupon validation error:', error);
       }
-      
-      this.calculateTotals();
-    } else {
-      this.appliedCoupon = '';
-      this.couponDiscount = 0;
-      this.isCouponValid = false;
-      this.couponMessage = 'كود الكوبون غير صحيح';
-    }
+    });
   }
 
   removeCoupon(): void {
@@ -275,6 +301,7 @@ export class CartComponent implements OnInit {
   toggleAuthMode(): void {
     this.isLoginMode = !this.isLoginMode;
     this.authMessage = '';
+    this.setAuthValidatorsForMode();
     this.authForm.reset();
   }
 
@@ -299,42 +326,79 @@ export class CartComponent implements OnInit {
 
   private async login(): Promise<void> {
     const { email, password } = this.authForm.value;
-    
-    const response = await this.http.post(`${environment.apiUrl}/auth/login`, {
-      email,
-      password
-    }).toPromise();
 
-    if (response && (response as any).token) {
-      localStorage.setItem('token', (response as any).token);
-      this.showAuthPopup = false;
-      this.authForm.reset();
-      this.authMessage = 'تم تسجيل الدخول بنجاح!';
-      
-      // Auto-apply the coupon after successful login
-      setTimeout(() => {
-        this.applyCoupon();
-      }, 1000);
+    try {
+      const response = await this.authService.login({
+        username: email,
+        password
+      }).toPromise();
+
+      if (response && response.success) {
+        this.showAuthPopup = false;
+        this.authForm.reset();
+        this.authMessage = 'تم تسجيل الدخول بنجاح!';
+        
+        // Auto-apply the coupon after successful login
+        setTimeout(() => {
+          this.applyCoupon();
+        }, 1000);
+      } else {
+        this.authMessage = 'خطأ في البيانات المدخلة';
+      }
+    } catch (error) {
+      this.authMessage = 'حدث خطأ أثناء تسجيل الدخول';
+      console.error('Login error:', error);
     }
   }
 
   private async register(): Promise<void> {
     const { email, password, fullName } = this.authForm.value;
     
-    // First register
-    await this.http.post(`${environment.apiUrl}/auth/register`, {
-      email,
-      password,
-      fullName
-    }).toPromise();
+    try {
+      // First register
+      const registerResponse = await this.authService.register({
+        username: email,
+        password,
+        fullName
+      }).toPromise();
 
-    // Then auto-login
-    await this.login();
+      if (registerResponse && registerResponse.success) {
+        // Then auto-login
+        await this.login();
+      } else {
+        this.authMessage = 'حدث خطأ أثناء إنشاء الحساب';
+      }
+    } catch (error) {
+      this.authMessage = 'حدث خطأ أثناء إنشاء الحساب';
+      console.error('Registration error:', error);
+    }
   }
 
   closeAuthPopup(): void {
     this.showAuthPopup = false;
     this.authForm.reset();
     this.authMessage = '';
+  }
+
+  // ===== Validators and helpers for auth form =====
+  private setAuthValidatorsForMode(): void {
+    const fullNameCtrl = this.authForm.get('fullName');
+    if (!fullNameCtrl) { return; }
+    if (this.isLoginMode) {
+      fullNameCtrl.clearValidators();
+    } else {
+      fullNameCtrl.setValidators([Validators.required, Validators.minLength(3)]);
+    }
+    fullNameCtrl.updateValueAndValidity({ emitEvent: false });
+  }
+
+  emailOrPhoneValidator(control: AbstractControl): ValidationErrors | null {
+    const value: string = (control.value || '').toString().trim();
+    if (!value) { return { required: true }; }
+    // Accept either valid email or Egyptian mobile number (starts 010/011/012/015 + 8 digits)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const egyptPhoneRegex = /^01[0-2,5][0-9]{8}$/;
+    const isValid = emailRegex.test(value) || egyptPhoneRegex.test(value);
+    return isValid ? null : { emailOrPhone: true };
   }
 } 

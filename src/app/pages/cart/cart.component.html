@@ -168,10 +168,22 @@
               <span class="font-semibold">{{ subtotal }} ج.م</span>
             </div>
             
-            <!-- Discount - Only show if there's a discount -->
+            <!-- Shipping Fee -->
+            <div class="flex justify-between">
+              <span class="text-gray-600">رسوم التوصيل:</span>
+              <span class="font-semibold">{{ deliveryFee }} ج.م</span>
+            </div>
+            
+            <!-- Product Discount - Only show if there's a discount -->
             <div *ngIf="discount > 0" class="flex justify-between">
-              <span class="text-gray-600">الخصم:</span>
+              <span class="text-gray-600">خصم المنتجات:</span>
               <span class="font-semibold text-green-600">-{{ discount }} ج.م</span>
+            </div>
+            
+            <!-- Coupon Discount - Only show if there's a coupon discount -->
+            <div *ngIf="couponDiscount > 0" class="flex justify-between">
+              <span class="text-gray-600">خصم الكوبون:</span>
+              <span class="font-semibold text-green-600">-{{ couponDiscount }} ج.م</span>
             </div>
             
             <!-- Coupon Section -->
@@ -184,10 +196,13 @@
                        placeholder="أدخل كود الكوبون"
                        class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
                        [class.border-green-500]="isCouponValid"
-                       [class.border-red-500]="!isCouponValid && couponMessage">
+                       [class.border-red-500]="!isCouponValid && couponMessage"
+                       [disabled]="isCouponLoading">
                 <button (click)="applyCoupon()" 
-                        class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm">
-                  تطبيق
+                        [disabled]="isCouponLoading || !couponCode.trim()"
+                        class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center">
+                  <span *ngIf="isCouponLoading" class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full ml-2"></span>
+                  {{ isCouponLoading ? 'جاري التحقق...' : 'تطبيق' }}
                 </button>
               </div>
               
@@ -220,11 +235,7 @@
               <span class="font-semibold text-green-600">-{{ couponDiscount }} ج.م</span>
             </div>
             
-            <!-- Shipping Cost -->
-            <div class="flex justify-between">
-              <span class="text-gray-600">رسوم التوصيل:</span>
-              <span class="font-semibold">{{ deliveryFee }} ج.م</span>
-            </div>
+        
             
             <div class="border-t border-gray-200 pt-4">
               <div class="flex justify-between">
@@ -538,7 +549,7 @@
             {{ isLoginMode ? 'تسجيل الدخول' : 'إنشاء حساب جديد' }}
           </h3>
           <p>
-            {{ isLoginMode ? 'سجل دخولك لاستخدام الكوبون ولمتابعة الطلب ايضا عن اكماله' : 'أنشئ حساب جديد واستفد من الكوبون' }}
+            {{ isLoginMode ? 'سجل دخولك لاستخدام الكوبون ولمتابعة الطلب ايضا عند اكماله' : 'أنشئ حساب جديد واستفد من الكوبون' }}
           </p>
         </div>
         

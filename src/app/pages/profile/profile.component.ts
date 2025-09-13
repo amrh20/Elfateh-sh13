@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService, User } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-profile',
@@ -14,6 +15,8 @@ import { AuthService, User } from '../../services/auth.service';
 export class ProfileComponent implements OnInit {
   isLoading: boolean = false;
   isEditMode: boolean = false;
+  isPasswordLoading: boolean = false;
+  activeTab: string = 'profile';
 
   user: User = {
     id: '',
@@ -25,8 +28,10 @@ export class ProfileComponent implements OnInit {
 
   editFullName: string = '';
   editUsername: string = '';
+  newPassword: string = '';
+  confirmPassword: string = '';
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private notifications: NotificationService) {}
 
   ngOnInit(): void {
     this.loadProfile();
@@ -60,6 +65,35 @@ export class ProfileComponent implements OnInit {
       if (success) {
         this.isEditMode = false;
         this.loadProfile();
+        this.notifications.showSuccess('تم تحديث المعلومات بنجاح!', { duration: 3000 });
+      } else {
+        this.notifications.showError('حدث خطأ أثناء تحديث المعلومات!');
+      }
+    });
+  }
+
+  changePassword(): void {
+    if (this.newPassword !== this.confirmPassword) {
+      this.notifications.showError('كلمتا المرور غير متطابقتان!');
+      return;
+    }
+
+    if (this.newPassword.length < 6) {
+      this.notifications.showError('كلمة المرور يجب أن تكون 6 أحرف على الأقل!');
+      return;
+    }
+
+    this.isPasswordLoading = true;
+    this.authService.updateMyProfile({
+      password: this.newPassword
+    }).subscribe(success => {
+      this.isPasswordLoading = false;
+      if (success) {
+        this.newPassword = '';
+        this.confirmPassword = '';
+        this.notifications.showSuccess('تم تغيير كلمة المرور بنجاح!', { duration: 3000 });
+      } else {
+        this.notifications.showError('حدث خطأ أثناء تغيير كلمة المرور!');
       }
     });
   }

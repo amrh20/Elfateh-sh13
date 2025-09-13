@@ -3,19 +3,21 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, NavigationStart, NavigationEnd } from '@angular/router';
 import { HeaderComponent } from './components/header/header.component';
 import { InstallPromptComponent } from './components/install-prompt/install-prompt.component';
+import { NotificationToastComponent } from './components/notification-toast/notification-toast.component';
 import { filter } from 'rxjs/operators';
 import { trigger, transition, style, animate, query } from '@angular/animations';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HeaderComponent, InstallPromptComponent],
+  imports: [CommonModule, RouterOutlet, HeaderComponent, InstallPromptComponent, NotificationToastComponent],
   template: `
     <app-header></app-header>
     <main [@routeAnimations]="prepareRoute(outlet)">
       <router-outlet #outlet="outlet"></router-outlet>
     </main>
     <app-install-prompt></app-install-prompt>
+    <app-notification-toast></app-notification-toast>
   `,
   styles: [],
   animations: [
