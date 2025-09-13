@@ -56,6 +56,11 @@ export class CartComponent implements OnInit {
     total: 0
   };
 
+  // Invalid discount dialog
+  showInvalidDiscountDialog = false;
+  invalidDiscountMessage = '';
+  orderWithoutDiscount = 0;
+
   // Areas in Zahraa El Maadi
   zahraaMaadiAreas: string[] = [
     'حي المستثمرين',
@@ -173,13 +178,10 @@ export class CartComponent implements OnInit {
     this.isCouponLoading = true;
     this.couponMessage = '';
 
-    // Calculate total amount including shipping before discount check
-    const totalAmountForDiscount = this.subtotal + this.deliveryFee;
-    
-    // Call the discount API
-    this.orderService.checkDiscount(this.couponCode.trim(), totalAmountForDiscount).subscribe({
+    // Calculate discount based on subtotal only (excluding delivery fee)
+    // Call the discount API with subtotal only
+    this.orderService.checkDiscount(this.couponCode.trim(), this.subtotal).subscribe({
       next: (response) => {
-        console.log('discount response',response);
         this.isCouponLoading = false;
         
         if (response.error) {
@@ -241,70 +243,114 @@ export class CartComponent implements OnInit {
     this.cartService.removeFromCart(productId);
   }
 
-  async submitOrder(): Promise<void> {
+  submitOrder(): void {
     if (this.checkoutForm.invalid) return;
 
     this.isSubmitting = true;
 
-    try {
-      // Create order object to match Swagger API schema
-      const formData = this.checkoutForm.value;
-      const currentUser = this.authService.getCurrentUser();
-      const order = {
-        customerInfo: {
-          name: formData.fullName,
-          email: currentUser?.email || "",
-          phone: formData.mobileNumber,
-          address: {
-            street: formData.deliveryAddress,
-            city: formData.city
+    // Create order object to match Swagger API schema
+    const formData = this.checkoutForm.value;
+    const currentUser = this.authService.getCurrentUser();
+    const order = {
+      customerInfo: {
+        name: formData.fullName,
+        email: currentUser?.email || "",
+        phone: formData.mobileNumber,
+        address: {
+          street: formData.deliveryAddress,
+          city: formData.city
+        }
+      },
+      items: this.cartItems.map(item => ({
+        product: item.product._id,
+        quantity: item.quantity
+      })),
+      notes: formData.additionalNotes || "",
+      deliveryFee: this.deliveryFee,
+      discountCode: this.appliedCoupon,
+    };
+
+    // Call the real API
+    this.orderService.createOrder(order).subscribe({
+      next: (response) => {
+        console.log('Order API response:', response.details.error.message);
+        
+        // Check if order was successful
+        if (response && (response.details.error.success === true || (!response.details.error&& !response.details.error.message))) {
+          // Save order details before clearing cart
+          this.savedOrderDetails = {
+            totalItems: this.totalItems,
+            subtotal: this.subtotal,
+            discount: this.discount,
+            couponDiscount: this.couponDiscount,
+            deliveryFee: this.deliveryFee,
+            total: this.total
+          };
+
+          // Clear cart
+          this.cartService.clearCart();
+
+          // Show success dialog
+          this.showSuccessDialog = true;
+          this.isSubmitting = false;
+        } else {
+          // Handle API error
+          console.error('Order submission failed:', response);
+          
+          // Check if it's a discount code error (invalid or already used)
+          if (response.details.error.message && 
+              (response.details.error.message.includes('Invalid discount code') || 
+               response.details.error.message.includes('Discount code already used') ||
+               response.details.error.message.includes('already used by this user'))) {
+            this.handleInvalidDiscountCode(response.details.error.message);
+          } else {
+            console.error('Order submission failed - response:', response);
+            alert('حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى');
+            this.isSubmitting = false;
           }
-        },
-        items: this.cartItems.map(item => ({
-          product: item.product._id,
-          quantity: item.quantity
-        })),
-        notes: formData.additionalNotes || "",
-        deliveryFee: this.deliveryFee
-      };
-
-      // Call the real API
-      const response = await this.orderService.createOrder(order).toPromise();
-
-      if (response && !response.error) {
-        // Save order details before clearing cart
-        this.savedOrderDetails = {
-          totalItems: this.totalItems,
-          subtotal: this.subtotal,
-          discount: this.discount,
-          couponDiscount: this.couponDiscount,
-          deliveryFee: this.deliveryFee,
-          total: this.total
-        };
-
-        // Clear cart
-        this.cartService.clearCart();
-
-        // Show success dialog
-        this.showSuccessDialog = true;
-
-        // After 3 seconds, redirect to home page
-        // setTimeout(() => {
-        //   this.closeSuccessDialog();
-        //   this.router.navigate(['/']);
-        // }, 3000);
-      } else {
-        // Handle API error
-        console.error('Order submission failed:', response);
-        alert('حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى');
+        }
+      },
+      error: (error) => {
+        console.error('Error submitting order - Full error object:', error);
+        console.error('Error status:', error.status);
+        console.error('Error error:', error.error);
+        
+        // Check if it's a discount code error in the error object
+        let errorMessage = '';
+        
+        console.log('error.error type:', typeof error.error);
+        console.log('error.error content:', error.error);
+        
+        // The API response shows error.error is an object with success: false, message: "..."
+        if (error.error && typeof error.error === 'object' && error.error.message) {
+          errorMessage = error.error.message;
+          console.log('Found message in error.error.message (object):', errorMessage);
+        } else if (error?.error?.message) {
+          errorMessage = error.error.message;
+          console.log('Found message in error.error.message (direct):', errorMessage);
+        } else if (error?.error && typeof error.error === 'string') {
+          errorMessage = error.error;
+          console.log('Found message in error.error as string:', errorMessage);
+        } else if (error?.message) {
+          errorMessage = error.message;
+          console.log('Found message in error.message:', errorMessage);
+        }
+        
+        console.log('Final extracted error message:', errorMessage);
+        
+        if (errorMessage && 
+            (errorMessage.includes('Invalid discount code') || 
+             errorMessage.includes('Discount code already used') ||
+             errorMessage.includes('already used by this user'))) {
+          console.log('Detected discount code error, showing dialog');
+          this.handleInvalidDiscountCode(errorMessage);
+        } else {
+          console.log('Not a discount code error, showing alert');
+          alert('حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى');
+          this.isSubmitting = false;
+        }
       }
-
-    } catch (error) {
-      console.error('Error submitting order:', error);
-      alert('حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى');
-    } finally {
-      this.isSubmitting = false;
-    }
+    });
   }
 
   // New method to close success dialog and redirect
@@ -317,6 +363,46 @@ export class CartComponent implements OnInit {
   goToTrackOrder(): void {
     this.showSuccessDialog = false;
     this.router.navigate(['/track-order']);
+  }
+
+  // Handle invalid discount code during order submission
+  handleInvalidDiscountCode(apiMessage?: string): void {
+    this.isSubmitting = false;
+    this.orderWithoutDiscount = this.subtotal + this.deliveryFee - this.discount; // Calculate total without coupon discount
+    
+    // Create appropriate message based on API response
+    let message = `كود الخصم "${this.appliedCoupon}" غير صالح أو تم استخدامه من قبل.`;
+    
+    if (apiMessage) {
+      if (apiMessage.includes('already used')) {
+        message = `كود الخصم "${this.appliedCoupon}" تم استخدامه من قبل ولا يمكن استخدامه مرة أخرى.`;
+      } else if (apiMessage.includes('Invalid')) {
+        message = `كود الخصم "${this.appliedCoupon}" غير صالح أو منتهي الصلاحية.`;
+      }
+    }
+    
+    this.invalidDiscountMessage = message;
+    this.showInvalidDiscountDialog = true;
+  }
+
+  // Proceed with order without discount
+  proceedWithoutDiscount(): void {
+    this.showInvalidDiscountDialog = false;
+    this.removeCoupon(); // Remove the invalid coupon
+    this.submitOrder(); // Retry submitting the order
+  }
+
+  // Go back to cart to modify discount code
+  goBackToCart(): void {
+    this.showInvalidDiscountDialog = false;
+    this.currentStep = 1; // Go back to cart step
+    this.viewportScroller.scrollToPosition([0, 0]);
+  }
+
+  // Close invalid discount dialog
+  closeInvalidDiscountDialog(): void {
+    this.showInvalidDiscountDialog = false;
+    this.isSubmitting = false;
   }
 
   private markFormGroupTouched(): void {

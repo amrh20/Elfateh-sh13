@@ -569,6 +569,67 @@
     </div>
   </div>
 
+  <!-- Invalid Discount Dialog -->
+  <div *ngIf="showInvalidDiscountDialog" class="fixed inset-0 z-50 overflow-y-auto">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm transition-opacity"></div>
+    
+    <!-- Dialog Container -->
+    <div class="flex min-h-full items-center justify-center p-4 text-center">
+      <div class="relative transform overflow-hidden rounded-2xl bg-white text-right shadow-2xl transition-all w-full max-w-md">
+        <!-- Warning Icon -->
+        <div class="bg-gradient-to-br from-orange-400 to-orange-600 p-8 text-center">
+          <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-white bg-opacity-20">
+            <!-- Warning icon -->
+            <div class="text-6xl text-white font-bold">⚠️</div>
+          </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="px-6 py-8 text-center">
+          <h3 class="text-2xl font-bold text-gray-900 mb-4">مشكلة في كود الخصم</h3>
+          <p class="text-gray-600 mb-6 leading-relaxed">
+            {{ invalidDiscountMessage }}
+          </p>
+          
+          <!-- Order Total without Discount -->
+          <div class="bg-gray-50 rounded-lg p-4 mb-6 text-right">
+            <h4 class="font-semibold text-gray-800 mb-3">إجمالي الطلب بدون الخصم:</h4>
+            <div class="text-2xl font-bold text-red-600">{{ orderWithoutDiscount }} ج.م</div>
+            <p class="text-sm text-gray-500 mt-2">شامل رسوم التوصيل</p>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="flex flex-col gap-3">
+            <!-- Proceed without discount -->
+            <button (click)="proceedWithoutDiscount()" 
+                    class="w-full bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-all duration-300 font-semibold text-lg flex items-center justify-center">
+              <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              متابعة الطلب بدون خصم
+            </button>
+            
+            <!-- Go back to cart -->
+            <button (click)="goBackToCart()" 
+                    class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-all duration-300 font-semibold text-lg flex items-center justify-center">
+              <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+              </svg>
+              العودة لتعديل كود الخصم
+            </button>
+            
+            <!-- Cancel -->
+            <button (click)="closeInvalidDiscountDialog()" 
+                    class="w-full bg-gray-300 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-400 transition-all duration-300 font-semibold text-lg">
+              إلغاء
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Authentication Popup -->
   <div *ngIf="showAuthPopup" class="auth-popup">
     <!-- Backdrop -->
