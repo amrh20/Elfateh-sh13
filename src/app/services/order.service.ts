@@ -142,4 +142,25 @@ export class OrderService {
       })
     );
   }
+
+  createOrder(orderData: any): Observable<any> {
+    const token = this.auth.getToken();
+    if (!token) { 
+      return of({ error: 'Authentication required' }); 
+    }
+    
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    });
+
+    return this.http.post<any>(`${this.apiUrl}/orders`, orderData, { headers }).pipe(
+      map(res => res),
+      catchError(error => {
+        console.error('Order creation error:', error);
+        return of({ error: 'Failed to create order', details: error });
+      })
+    );
+  }
 } 

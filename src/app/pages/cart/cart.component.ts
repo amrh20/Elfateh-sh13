@@ -46,6 +46,20 @@ export class CartComponent implements OnInit {
   currentStep = 1; // Step 1: Cart Review, Step 2: Payment Details
   showSuccessDialog = false; // New property for success dialog
 
+  // Areas in Zahraa El Maadi
+  zahraaMaadiAreas: string[] = [
+    'حي المستثمرين',
+    'حي الشطر الثاني', 
+    'حي الشطر الأول',
+    'حي 6 أكتوبر',
+    'حي البنفسج',
+    'حي مدينة المعراج',
+    'حي فيلات الشروق',
+    'حي الموسيقار علي الحجار',
+    'حي أول نادي المعادي',
+    'حي النرجس'
+  ];
+
   constructor(
     private cartService: CartService,
     private orderService: OrderService,
@@ -59,7 +73,7 @@ export class CartComponent implements OnInit {
       fullName: ['', [Validators.required, Validators.minLength(3)]],
       mobileNumber: ['', [Validators.required, Validators.pattern(/^01[0-2,5]{1}[0-9]{8}$/)]],
       deliveryAddress: ['', [Validators.required]],
-      city: ['', [Validators.required, Validators.minLength(2)]],
+      city: ['', [Validators.required]],
       additionalNotes: [''],
       paymentMethod: ['cash_on_delivery', Validators.required]
     });
@@ -218,35 +232,51 @@ export class CartComponent implements OnInit {
     this.isSubmitting = true;
 
     try {
-      // Create order object
+      // Create order object to match Swagger API schema
+      const formData = this.checkoutForm.value;
+      const currentUser = this.authService.getCurrentUser();
       const order = {
-        items: this.cartItems,
-        totalAmount: this.total,
-        deliveryInfo: this.checkoutForm.value,
-        couponCode: this.appliedCoupon,
-        couponDiscount: this.couponDiscount,
-        deliveryFee: this.deliveryFee,
-        orderDate: new Date(),
-        status: 'pending'
+        customerInfo: {
+          name: formData.fullName,
+          email: currentUser?.email || "",
+          phone: formData.mobileNumber,
+          address: {
+            street: formData.deliveryAddress,
+            city: formData.city
+          }
+        },
+        items: this.cartItems.map(item => ({
+          product: item.product._id,
+          quantity: item.quantity
+        })),
+        notes: formData.additionalNotes || "",
+        deliveryFee: this.deliveryFee
       };
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Call the real API
+      const response = await this.orderService.createOrder(order).toPromise();
 
-      // Clear cart
-      this.cartService.clearCart();
+      if (response && !response.error) {
+        // Clear cart
+        this.cartService.clearCart();
 
-      // Show success dialog
-      this.showSuccessDialog = true;
+        // Show success dialog
+        this.showSuccessDialog = true;
 
-      // After 3 seconds, redirect to home page
-      setTimeout(() => {
-        this.closeSuccessDialog();
-        this.router.navigate(['/']);
-      }, 3000);
+        // After 3 seconds, redirect to home page
+        setTimeout(() => {
+          this.closeSuccessDialog();
+          this.router.navigate(['/']);
+        }, 3000);
+      } else {
+        // Handle API error
+        console.error('Order submission failed:', response);
+        alert('حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى');
+      }
 
     } catch (error) {
       console.error('Error submitting order:', error);
+      alert('حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى');
     } finally {
       this.isSubmitting = false;
     }
